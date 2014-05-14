@@ -55,6 +55,49 @@ hpc_cumul_activity = 0;
 global is_learning;
 is_learning = 1;
 
+% PFC AREA
+global PFC_SIZE;
+PFC_SIZE = 250;
+
+global w_food_to_pfc;
+global w_place_to_pfc;
+global w_pfc_to_food;
+global w_pfc_to_place;
+
+global w_food_to_pfc_prev;
+global w_place_to_pfc_prev;
+global w_pfc_to_food_prev;
+global w_pfc_to_place_prev;
+
+global pfc_in_queue;
+global pfc_weight_queue;
+global pfc_responses_to_place;
+
+pfc_in_queue = {};
+pfc_weight_queue = {};
+
+w_food_to_pfc = .01 .* (rand(FOOD_CELLS, PFC_SIZE) < EXT_CONNECT);
+w_pfc_to_food = w_food_to_pfc';
+w_place_to_pfc = .01 .* (rand(PLACE_CELLS, PFC_SIZE) < EXT_CONNECT);
+w_pfc_to_place = w_place_to_pfc';
+
+global w_pfc_to_place_init;
+global w_place_to_pfc_init;
+w_pfc_to_place_init = w_pfc_to_place;
+w_place_to_pfc_init = w_place_to_pfc;
+
+w_food_to_pfc_prev = w_food_to_pfc;
+w_place_to_pfc_prev = w_place_to_pfc;
+w_pfc_to_food_prev = w_pfc_to_food;
+w_pfc_to_place_prev = w_pfc_to_place;
+
+global pfc;
+pfc = zeros(cycles, PFC_SIZE);
+
+pfc_responses_to_place = zeros(PLACE_CELLS, HPC_SIZE);
+% end PFC!
+
+
 place_in_queue = {};
 place_weight_queue = {};
 
@@ -96,7 +139,6 @@ PLACE_SLOTS = zeros(PLACE_CELLS);
 PLACE_STR = 0.4;
 
 side1 = 1*(rand(1, PLACE_CELLS) < PLACE_STR/2);
-
 side2 = 1*(rand(1, PLACE_CELLS) < PLACE_STR/2);
 
 % Food is pre-stored.

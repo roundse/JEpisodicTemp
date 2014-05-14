@@ -1,52 +1,49 @@
-function returnable = cycle_hpc(hpc_in, input_weights, input, value)
-global w_hpc_to_hpc;
-global hpc_eye;
-global INTERNAL_LEARNING;
+function returnable = cycle_pfc(pfc_in, input_weights, input, value)
+global w_pfc_to_pfc;
+global pfc_eye;
 
-global hpc_in_queue;
-global hpc_weight_queue;
+global pfc_in_queue;
+global pfc_weight_queue;
 
 global HVAL;
-global HPC_SIZE;
+global PFC_SIZE;
 
-hpc_eye = eye(HPC_SIZE);
+pfc_eye = eye(PFC_SIZE);
+w_pfc_to_pfc = zeros(PFC_SIZE);
 
-queue_pos = length(hpc_in_queue)+1;
+queue_pos = length(pfc_in_queue)+1;
 
 if nargin < 3
     total_inputs = 0;
     for i = 1:(queue_pos-1)
-        temp_input = total_inputs + hpc_in_queue{i} * hpc_weight_queue{i};
+        temp_input = total_inputs + pfc_in_queue{i} * pfc_weight_queue{i};
         
-        if input_weights
-           %w_hpc_to_hpc = oja(hpc_in, temp_input, w_hpc_to_hpc, HVAL); 
-        end
         total_inputs = total_inputs + temp_input;
     end
     
-    food_hpc_out = activity(hpc_in, hpc_eye, total_inputs, ...
-        w_hpc_to_hpc);
+    food_pfc_out = activity(pfc_in, pfc_eye, total_inputs, ...
+        w_pfc_to_pfc);
     
-    returnable = food_hpc_out;
+    returnable = food_pfc_out;
 
-    for l = 1:length(w_hpc_to_hpc)
-        w_hpc_to_hpc(l,l) = 0;
+    for l = 1:length(w_pfc_to_pfc)
+        w_pfc_to_pfc(l,l) = 0;
     end
 
-    hpc_weight_queue{queue_pos} = [];
-    hpc_in_queue{queue_pos} = [];    
-    hpc_in_queue = {};
+    pfc_weight_queue{queue_pos} = [];
+    pfc_in_queue{queue_pos} = [];    
+    pfc_in_queue = {};
 else
     % return the weights given if no weight in queue
-    if ( queue_pos > length(hpc_weight_queue) )
+    if ( queue_pos > length(pfc_weight_queue) )
         returnable = input_weights;
     else
-        returnable = hpc_weight_queue{queue_pos};
+        returnable = pfc_weight_queue{queue_pos};
     end
 
     HVAL = value;
     
-    hpc_in_queue{queue_pos} = input;
-    hpc_weight_queue{queue_pos} = input_weights;
+    pfc_in_queue{queue_pos} = input;
+    pfc_weight_queue{queue_pos} = input_weights;
 end
 end
