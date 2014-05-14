@@ -49,13 +49,13 @@ for e=1:1
         VALUE = v;
 
         for i = 1:runs
-            TRIAL_DIR = horzcat(DIR, '\', num2str(VALUE),'-', ...
-                num2str(VALUE),';', num2str(i),'\');
+            TRIAL_DIR = horzcat(DIR, '\', num2str(VALUE), '-', ...
+                num2str(VALUE), ';', num2str(i), '\');
             mkdir(TRIAL_DIR);
             init_val = VALUE;
 
             [place_responses(i,:) side_pref checked_place first_checked] = ...
-                bg_experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
+            experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
 
             place_stats(i,:) = mean(side_pref);
             checked_places{i} = checked_place;
