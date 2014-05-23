@@ -17,14 +17,13 @@ gain_max = 0.7;
 runs = 10;
 cycles = 14;
 
-
 global REPL;
 global PILF;
 global DEGR;
 
 %       Worm   Peanut
 REPL = [ 5.0   2 ];
-PILF = [ 1.0   2 ]; 
+PILF = [ 1.0   2 ];
 DEGR = [-1.5   2 ];
 
 gain_oja = 0.7;
@@ -118,4 +117,3 @@ save(filename,'trials', 'avg_first_checks', 'avg_side_preference');
 % profile viewer
 % profile off
 end
-

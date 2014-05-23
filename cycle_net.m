@@ -34,13 +34,13 @@ for j = 2:cycles
     food_out = food(j-1, :);
     pfc_out = pfc(j-1,:);                                           %
 
-    cycle_place(place_out, eye(PLACE_CELLS), place_stim, value);
-    cycle_place(place_out, w_hpc_to_place, hpc_out, value);
-    cycle_place(place_out, w_pfc_to_place, pfc_out, value);         %
+    cycle_place(place_out, eye(PLACE_CELLS), place_stim);
+    cycle_place(place_out, w_hpc_to_place, hpc_out);
+    cycle_place(place_out, w_pfc_to_place, pfc_out);         %
 
-    cycle_food(food_out, eye(FOOD_CELLS), food_stim, value);
-    cycle_food(food_out, w_hpc_to_food, hpc_out, value);
-    cycle_food(food_out, w_pfc_to_food, pfc_out, value);            %
+    cycle_food(food_out, eye(FOOD_CELLS), food_stim);
+    cycle_food(food_out, w_hpc_to_food, hpc_out);
+    cycle_food(food_out, w_pfc_to_food, pfc_out);            %
 
     cycle_hpc(hpc_out, w_place_to_hpc, place_out, value);
     cycle_hpc(hpc_out, w_food_to_hpc, food_out, value);

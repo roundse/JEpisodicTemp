@@ -1,6 +1,7 @@
-function returnable = cycle_place(place_in, input_weights, input, value)
+function returnable = cycle_place(place_in, input_weights, input)
     global w_place_to_place;
     global PVAL;
+    global HVAL;
 
     global place_in_queue;
     global place_weight_queue;
@@ -40,7 +41,7 @@ function returnable = cycle_place(place_in, input_weights, input, value)
 
         if hpc_learning
             [w_hpc_to_place w_place_to_hpc] = recurrent_oja(place_out, place_in, ...
-                hpc_in, w_hpc_to_place, w_place_to_hpc, PVAL);
+                hpc_in, w_hpc_to_place, w_place_to_hpc, HVAL);
         end
         
         if pfc_learning
@@ -56,8 +57,6 @@ function returnable = cycle_place(place_in, input_weights, input, value)
         else
             returnable = place_weight_queue{queue_pos};
         end
-
-        PVAL = value;
 
         place_in_queue{queue_pos} = input;
         place_weight_queue{queue_pos} = input_weights;

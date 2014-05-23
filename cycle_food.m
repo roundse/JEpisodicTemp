@@ -1,6 +1,7 @@
-function returnable = cycle_food(food_in, input_weights, input, value)
+function returnable = cycle_food(food_in, input_weights, input)
     global w_food_to_food;
-    global VAL;
+    global PVAL;
+    global HVAL;
 
     global food_in_queue;
     global food_weight_queue;
@@ -39,12 +40,12 @@ function returnable = cycle_food(food_in, input_weights, input, value)
 
         if hpc_learning
             [w_hpc_to_food w_food_to_hpc] = recurrent_oja(food_out, ...
-                food_in, hpc_in, w_hpc_to_food, w_food_to_hpc, VAL);
+                food_in, hpc_in, w_hpc_to_food, w_food_to_hpc, HVAL);
         end
         
         if pfc_learning
             [w_pfc_to_food w_food_to_pfc] = recurrent_oja(food_out, ...
-                food_in, pfc_in, w_pfc_to_food, w_food_to_pfc, VAL);
+                food_in, pfc_in, w_pfc_to_food, w_food_to_pfc, PVAL);
         end
 
         food_in_queue = {};
@@ -54,10 +55,6 @@ function returnable = cycle_food(food_in, input_weights, input, value)
             returnable = input_weights;
         else
             returnable = food_weight_queue{queue_pos};
-        end
-        
-        if nargin > 3
-            VAL = value;
         end
         
         food_in_queue{queue_pos} = input;

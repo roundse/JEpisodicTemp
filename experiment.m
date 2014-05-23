@@ -176,7 +176,6 @@ default_val = [5 2];
 run_protocol('training', cycles, is_disp_weights, VALUE);
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TESTING: Agent stores one food, consolidates either 4 or 124 hours, then
 % stores the second food, and consolidates the leftover time.
@@ -186,8 +185,7 @@ run_protocol('training', cycles, is_disp_weights, VALUE);
 [checked_places, side_pref, avg_checks, first_checked] = ...
                         run_protocol('testing', cycles, is_disp_weights, VALUE);
 
-                    
-                    
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SAVING VARIABLES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -201,7 +199,6 @@ varlist = {'hpc','place_region','food', 'place_in_queue', ...
     'place_weight_queue', 'hpc_in_queue', 'hpc_weight_queue', ...
     'food_in_queue', 'food_weight_queue'};
 clear(varlist{:})
-
 end
 
 function places = spot_shuffler (start, finish)
@@ -227,7 +224,10 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     global peanut; global PEANUT;
     
     global REPL; global PILF; global DEGR;
-    
+
+    global PVAL;
+    global HVAL;
+
     if VALUE == 1
         value = REPL;
     elseif VALUE ==2
@@ -263,7 +263,10 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     else
         duration = 4;
     end
-        
+
+    PVAL = 1;
+    HVAL = 1;
+
     for j=1:duration
         for l=1:2
             is_learning = 0;
@@ -344,6 +347,9 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
                             v = val(peanut);
                         end
 
+                        PVAL = v;
+                        HVAL = v;
+                        
                         cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, v);
                     end
                 end
@@ -354,9 +360,9 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             disp('Current value is:');
             disp(val);
             
-            m1 = mean(hpc_cumul_activity) / (12*14);         
+            m1 = mean(hpc_cumul_activity) / (12*14);
             activity1 = mean(m1);
-            disp(['HPC Consolidate: ', num2str(activity1)]);  
+            disp(['HPC Consolidate: ', num2str(activity1)]);
 
             m2 = mean(pfc_cumul_activity) / (12*14);
             activity2 = mean(m2);
@@ -371,5 +377,4 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
         
         time_order = [time_order(2) time_order(1)];
     end
-
 end
