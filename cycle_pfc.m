@@ -21,8 +21,7 @@ if nargin < 3
         total_inputs = total_inputs + temp_input;
     end
     
-    food_pfc_out = activity(pfc_in, pfc_eye, total_inputs, ...
-        w_pfc_to_pfc);
+    food_pfc_out = activity(pfc_in, pfc_eye, total_inputs, w_pfc_to_pfc);
     
     returnable = food_pfc_out;
 

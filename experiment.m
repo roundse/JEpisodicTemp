@@ -1,5 +1,11 @@
-function [avg_checks side_pref checked_places first_checked] = bg_experiment(cycles, ... 
+function [avg_checks side_pref checked_places first_checked] = experiment(cycles, ... 
     learning_rate, gain_oja, is_disp_weights, VALUE)
+
+% To do:
+% - separate pfc and hpc learning
+% - create different value systems for hpc / pfc
+% - make pfc learn from hpc
+% - pfc decay
 
 
 global GAIN;
@@ -13,7 +19,7 @@ global PLACE_CELLS;
 FOOD_CELLS = 2;
 PLACE_CELLS = 14;
 
-EXT_CONNECT = .2;                   % Chance of connection = 10%
+EXT_CONNECT = .2;                   % Chance of connection = 20%
 INT_CONNECT = .2;
 
 global worm;
@@ -51,6 +57,9 @@ global hpc_responses_to_place;
 
 global hpc_cumul_activity;
 hpc_cumul_activity = 0;
+
+global pfc_cumul_activity;
+pfc_cumul_activity = 0;
 
 global is_learning;
 is_learning = 1;
@@ -229,7 +238,13 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     
     global place;
     global hpc_cumul_activity;
-    global default_val;
+    global pfc_cumul_activity;
+
+    global hpc_learning;
+    global pfc_learning;
+    
+    hpc_learning = 0;
+    pfc_learning = 0;
     
     food_types = [peanut worm];
     rev_food = [worm peanut];
@@ -259,7 +274,7 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
                 % Should change back to random
                 % !~CHANGE~! 
                 % just want trials to work
-                current_type =rev_food(l);
+                current_type = rev_food(l);
             
              % otherwise time is randomly one way or the other
             else
@@ -269,12 +284,6 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             end
             
             disp([prot_type, ' ', num2str(j)]);
-
-            if current_time == 4
-                value1 = default_val;
-            else
-                value1 = VALUE;
-            end
 
             if current_type == peanut
                 disp('First food to be stored is peanut');
@@ -291,8 +300,7 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
                     spots = spot_shuffler(8,14);
                 end        
             else
-                spots = spot_shuffler(7);
-                spots = horzcat(spots,spot_shuffler(8,14));
+                spots = horzcat(spot_shuffler(7), spot_shuffler(8,14));
             end
             
             val = 1;
@@ -305,9 +313,7 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
                 cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, val);
             end
             
-            % m1 = mean(hpc_cumul_activity) / (current_time*14);
-            
-            % conso lidate
+            % consolidate
             spots = spot_shuffler(14);
             
             for q = 1:current_time
@@ -319,6 +325,7 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             % after retrieving food it ponders the stimulus
             spots = spot_shuffler(14);
             hpc_cumul_activity = 0;
+            pfc_cumul_activity = 0;
             
             if current_time == 120
                 val = value;
@@ -327,7 +334,8 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             end
 
             if ~is_testing
-                is_learning = 1;
+                hpc_learning = 1;
+                pfc_learning = 1;
                 for q = 1:12
                     for i = spots
                         if place(i,:) == WORM
@@ -343,13 +351,16 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
+            disp('Current value is:');
+            disp(val);
+            
             m1 = mean(hpc_cumul_activity) / (12*14);         
             activity1 = mean(m1);
             disp(['HPC Consolidate: ', num2str(activity1)]);  
 
-            %m2 = mean(pfc_sum);
-            %activity2 = mean(m2);
-            %disp(['PFC Consolidate: ', num2str(activity2)]);
+            m2 = mean(pfc_cumul_activity) / (12*14);
+            activity2 = mean(m2);
+            disp(['PFC Consolidate: ', num2str(activity2)]);
         end
 
          % only if it is testing is the judging protocol enacted

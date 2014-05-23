@@ -7,16 +7,23 @@ function returnable = cycle_food(food_in, input_weights, input, value)
     
     global FOOD_CELLS;
     
-    % recurrency stuff
+    % HPC recurrency stuff
     global w_food_to_hpc;
     global w_hpc_to_food;
-       
+    global hpc_learning;
+  
+    % PFC recurrency stuff
+    global w_food_to_pfc;
+    global w_pfc_to_food;
+    global pfc_learning;
+    
     food_eye = eye(FOOD_CELLS);
       
     queue_pos = length(food_in_queue)+1;
     
     if nargin < 3
     	total_inputs = 0;
+        pfc_in = food_in{3};
         hpc_in = food_in{2};
         food_in = food_in{1};
         
@@ -30,9 +37,14 @@ function returnable = cycle_food(food_in, input_weights, input, value)
         
         returnable = food_out;
 
-        if input_weights
-                [w_hpc_to_food w_food_to_hpc] = recurrent_oja(food_out, food_in, hpc_in, ...
-                    w_hpc_to_food, w_food_to_hpc, VAL);
+        if hpc_learning
+            [w_hpc_to_food w_food_to_hpc] = recurrent_oja(food_out, ...
+                food_in, hpc_in, w_hpc_to_food, w_food_to_hpc, VAL);
+        end
+        
+        if pfc_learning
+            [w_pfc_to_food w_food_to_pfc] = recurrent_oja(food_out, ...
+                food_in, pfc_in, w_pfc_to_food, w_food_to_pfc, VAL);
         end
 
         food_in_queue = {};
