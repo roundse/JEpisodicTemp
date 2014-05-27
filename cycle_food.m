@@ -17,6 +17,7 @@ function returnable = cycle_food(food_in, input_weights, input)
     global w_food_to_pfc;
     global w_pfc_to_food;
     global pfc_learning;
+    global is_pfc;
     
     food_eye = eye(FOOD_CELLS);
       
@@ -44,8 +45,10 @@ function returnable = cycle_food(food_in, input_weights, input)
         end
         
         if pfc_learning
+            is_pfc = 1;
             [w_pfc_to_food w_food_to_pfc] = recurrent_oja(food_out, ...
                 food_in, pfc_in, w_pfc_to_food, w_food_to_pfc, PVAL);
+            is_pfc = 0;
         end
 
         food_in_queue = {};

@@ -106,7 +106,6 @@ pfc = zeros(cycles, PFC_SIZE);
 pfc_responses_to_place = zeros(PLACE_CELLS, HPC_SIZE);
 % end PFC!
 
-
 place_in_queue = {};
 place_weight_queue = {};
 
@@ -240,11 +239,16 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     global hpc_cumul_activity;
     global pfc_cumul_activity;
 
+    global is_pfc;
+    
     global hpc_learning;
     global pfc_learning;
     
     hpc_learning = 0;
     pfc_learning = 0;
+    
+
+    is_pfc = 0;
     
     food_types = [peanut worm];
     rev_food = [worm peanut];
@@ -318,42 +322,65 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             
             % consolidate
             spots = spot_shuffler(14);
-            
-            for q = 1:current_time
-                for i = spots
-                    cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, val);
-                end
-            end
-            
-            % after retrieving food it ponders the stimulus
-            spots = spot_shuffler(14);
-            hpc_cumul_activity = 0;
-            pfc_cumul_activity = 0;
-            
+
             if current_time == 120
                 val = value;
             else
                 val = REPL;
             end
 
-            if ~is_testing
+            for q = 1:current_time
                 hpc_learning = 1;
-                pfc_learning = 1;
-                for q = 1:12
-                    for i = spots
-                        if place(i,:) == WORM
-                            v = val(worm);
-                        else
-                            v = val(peanut);
-                        end
-
-                        PVAL = v;
-                        HVAL = v;
-                        
-                        cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, v);
-                    end
+                if ~is_testing
+                    pfc_learning = 1;
                 end
+
+                for i = spots
+                    if place(i,:) == WORM
+                        v = val(worm);
+                    else
+                        v = val(peanut);
+                    end
+
+                    PVAL = v;
+                    HVAL = v;
+                        
+                    cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
+                end
+
+                pfc_learning = 0;
+                hpc_learning = 0;
             end
+            
+%             % after retrieving food it ponders the stimulus
+%             spots = spot_shuffler(14);
+%             hpc_cumul_activity = 0;
+%             pfc_cumul_activity = 0;
+%             
+%             if current_time == 120
+%                 val = value;
+%             else
+%                 val = REPL;
+%             end
+% 
+%             if ~is_testing
+%                 hpc_learning = 1;
+%                 for q = 1:12
+%                     for i = spots
+%                         if place(i,:) == WORM
+%                             v = val(worm);
+%                         else
+%                             v = val(peanut);
+%                         end
+% 
+%                         PVAL = v;
+%                         HVAL = v;
+%                         
+%                         cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, v);
+%                     end
+%                 end
+%                 hpc_learning = 0;
+%             end
             
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 

@@ -18,6 +18,7 @@ function returnable = cycle_place(place_in, input_weights, input)
     global w_place_to_pfc;
     global w_pfc_to_place;
     global pfc_learning;
+    global is_pfc;
 
     place_eye = eye(PLACE_CELLS);
     w_place_to_place = zeros(PLACE_CELLS);
@@ -45,8 +46,10 @@ function returnable = cycle_place(place_in, input_weights, input)
         end
         
         if pfc_learning
+            is_pfc = 1;
             [w_pfc_to_place w_place_to_pfc] = recurrent_oja(place_out, place_in, ...
                 pfc_in, w_pfc_to_place, w_place_to_pfc, PVAL);
+            is_pfc = 0;
         end
 
         place_in_queue = {};

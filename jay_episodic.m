@@ -8,6 +8,8 @@ global gain_oja;
 global INP_STR;
 global cycles;
 
+global hpc_decay;
+
 global pfc_learning_rate;
 
 INP_STR = 2;
@@ -21,7 +23,7 @@ global REPL;
 global PILF;
 global DEGR;
 
-%       Worm   Peanut
+%      Worm   Peanut
 REPL = [ 5.0   2 ];
 PILF = [ 1.0   2 ];
 DEGR = [-1.5   2 ];
