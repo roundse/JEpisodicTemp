@@ -19,7 +19,10 @@ function returnable = cycle_place(place_in, input_weights, input)
     global w_pfc_to_place;
     global pfc_learning;
     global is_pfc;
+    decay = .004;
 
+    global REPL;
+    
     place_eye = eye(PLACE_CELLS);
     w_place_to_place = zeros(PLACE_CELLS);
 
@@ -41,8 +44,23 @@ function returnable = cycle_place(place_in, input_weights, input)
         returnable = place_out;
 
         if hpc_learning
+            temp_w_h_p = w_hpc_to_place;
+            temp_w_p_h = w_place_to_hpc;
+            
+%             if HVAL ~= REPL(2)
+%                temp = HVAL;
+%                HVAL = 5;
+%             end
+            
             [w_hpc_to_place w_place_to_hpc] = recurrent_oja(place_out, place_in, ...
                 hpc_in, w_hpc_to_place, w_place_to_hpc, HVAL);
+            
+%             if HVAL ~= REPL(2)
+%                 HVAL = temp;
+%             end
+            
+            w_hpc_to_food = w_hpc_to_place - decay * (temp_w_h_p - w_hpc_to_place);
+            w_food_to_hpc = w_place_to_hpc - decay * (temp_w_p_h - w_place_to_hpc);
         end
         
         if pfc_learning

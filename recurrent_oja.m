@@ -39,7 +39,8 @@ for i = 1:I
             wx_cur = wx(j,i);
             delta_wx = eta*y(j) * (x(i) - y*wx(:,i));
             temp_x = wx_cur + delta_wx ;
-            d = decay * (temp_x - wx_cur);
+%             d = decay * (temp_x - wx_cur);
+            d = 0;
             wx(j,i) = temp_x - d;
         end
     end
@@ -53,7 +54,8 @@ for i = 1:I
             wy_cur = wy(j,i);
             delta_wy = eta*y(i) * (alpha*value*y_old(i) - y*wy(j,:)');
             temp_y = wy_cur + delta_wy ;
-            d = decay * (temp_y - wy_cur);
+%             d = decay * (temp_y - wy_cur);
+            d = 0;
             wy(j,i) = temp_y - d;
         end
     end

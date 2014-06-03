@@ -1,4 +1,4 @@
-function [avg_checks side_pref checked_places first_checked] = experiment(cycles, ... 
+function [worm_trial pean_trial] = experiment(cycles, ... 
     learning_rate, gain_oja, is_disp_weights, VALUE)
 
 % To do:
@@ -181,7 +181,7 @@ run_protocol('training', cycles, is_disp_weights, VALUE);
 % Then gets to recover its caches.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[checked_places, side_pref, avg_checks, first_checked] = ...
+[worm_trial pean_trial] = ...
                         run_protocol('testing', cycles, is_disp_weights, VALUE);
 
 
@@ -215,7 +215,7 @@ function places = spot_shuffler (start, finish)
     end
 end
 
-function [checked_places, side_pref, avg_checks, first_checked] = ...
+function [worm_trial pean_trial] = ...
           run_protocol (prot_type, cycles, is_disp_weights, VALUE)
     global PLACE_SLOTS;
     
@@ -246,7 +246,6 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     
     hpc_learning = 0;
     pfc_learning = 0;
-    
 
     is_pfc = 0;
     
@@ -262,26 +261,24 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
     global is_learning;
         
     if is_testing
-        % !~CHANGE~! 
-        duration = 1;
+        duration = 2;
     else
         duration = 4;
     end
 
     PVAL = 1;
     HVAL = 1;
-
+   
     for j=1:duration
         for l=1:2
             is_learning = 0;
+            %reset decay
+            %store longterm memory?
             
             % if testing time is always 4 then 120
             if is_testing
                 current_time = time_lengths(l);
-                % Should change back to random
-                % !~CHANGE~! 
-                % just want trials to work
-                current_type = rev_food(l);
+                current_type = food_types(type_order(l));
             
              % otherwise time is randomly one way or the other
             else
@@ -323,19 +320,23 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             % consolidate
             spots = spot_shuffler(14);
 
-            if current_time == 120
-                val = value;
+            if is_testing
+                if current_time == 120
+                    val = value;
+                else
+                    val = REPL;
+                end
             else
-                val = REPL;
+                val = value;
             end
 
             for q = 1:current_time
-                hpc_learning = 1;
                 if ~is_testing
                     pfc_learning = 1;
                 end
 
                 for i = spots
+                    input_decay = (60/(60+q));
                     if place(i,:) == WORM
                         v = val(worm);
                     else
@@ -345,43 +346,14 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
                     PVAL = v;
                     HVAL = v;
                         
-                    cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
+                    cycle_net( PLACE_SLOTS(i,:)*input_decay, ...
+                               place(i,:)*input_decay, cycles, v);
                 end
 
                 pfc_learning = 0;
                 hpc_learning = 0;
             end
-            
-%             % after retrieving food it ponders the stimulus
-%             spots = spot_shuffler(14);
-%             hpc_cumul_activity = 0;
-%             pfc_cumul_activity = 0;
-%             
-%             if current_time == 120
-%                 val = value;
-%             else
-%                 val = REPL;
-%             end
-% 
-%             if ~is_testing
-%                 hpc_learning = 1;
-%                 for q = 1:12
-%                     for i = spots
-%                         if place(i,:) == WORM
-%                             v = val(worm);
-%                         else
-%                             v = val(peanut);
-%                         end
-% 
-%                         PVAL = v;
-%                         HVAL = v;
-%                         
-%                         cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, v);
-%                     end
-%                 end
-%                 hpc_learning = 0;
-%             end
-            
+                        
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
             disp('Current value is:');
@@ -394,14 +366,73 @@ function [checked_places, side_pref, avg_checks, first_checked] = ...
             m2 = mean(pfc_cumul_activity) / (12*14);
             activity2 = mean(m2);
             disp(['PFC Consolidate: ', num2str(activity2)]);
+            
         end
-
-         % only if it is testing is the judging protocol enacted
+        
+        % only if it is testing is the judging protocol enacted
+        % then flip food order
+        % finally collect variables and store based on first food type
         if is_testing
             [checked_places, side_pref, avg_checks, first_checked] ...
                  = place_slot_check;
+
+            food_types = [food_types(2) food_types(1)];
+             
+            trial = struct('type_order' , food_types(1), ...
+                           'check_order', checked_places, ...
+                           'first_check', first_checked, ...
+                           'side_pref'  , side_pref, ...
+                           'avg_checks' , avg_checks);
+
+            % the worm/pean_trail variables blow need to be changed to a
+            % cell with the index of {end+1} if duration is 3 or greater...
+            % also how the trial variables are handled in jay_episodic will
+            % need to be changed as well!
+            if (trial.('type_order') == worm)
+                worm_trial = trial;
+            else
+                
+                % jay considers input given
+                spots = spot_shuffler(14);
+
+                if current_time == 120
+                    val = value;
+                else
+                    val = REPL;
+                end
+
+                for q = 1:12
+                    hpc_learning = 1;
+                    if ~is_testing
+                        pfc_learning = 1;
+                    end
+
+                    for i = spots
+                        input_decay = (6/(6+q));
+                        if place(i,:) == WORM
+                            v = val(worm);
+                            HVAL = 5;
+                        else
+                            v = val(peanut);
+                            HVAL = v;
+                        end
+
+                        PVAL = v;
+                        
+
+                        cycle_net( PLACE_SLOTS(i,:)*input_decay, ...
+                                   place(i,:)*input_decay, cycles, v);
+                    end
+
+                    pfc_learning = 0;
+                    hpc_learning = 0;
+                end
+                pean_trial = trial;
+            end
+            
+        % if training then just reverse time order after trial
+        else
+            time_order = [time_order(2) time_order(1)];
         end
-        
-        time_order = [time_order(2) time_order(1)];
     end
 end
