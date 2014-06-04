@@ -4,7 +4,11 @@ global w_place_to_hpc;
 global w_hpc_to_place;
 global w_food_to_hpc;
 global w_hpc_to_food;
-global w_hpc_to_hpc;
+global w_place_to_pfc;
+global w_pfc_to_place;
+global w_food_to_pfc;
+global w_pfc_to_food;
+% global w_hpc_to_hpc;
 global hpc;
 global place_region;
 global food;
@@ -37,11 +41,11 @@ if is_disp_weights
     colorbar();
     drawnow;
 
-    figure;
-    title(horzcat(section, ' HPC to HPC'));
-    imagesc(w_hpc_to_hpc);
-    colorbar();
-    drawnow;
+%     figure;
+%     title(horzcat(section, ' HPC to HPC'));
+%     imagesc(w_hpc_to_hpc);
+%     colorbar();
+%     drawnow;
 
     figure;
     subplot(1,2,1);

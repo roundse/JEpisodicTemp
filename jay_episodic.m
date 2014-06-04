@@ -11,11 +11,19 @@ global cycles;
 global hpc_decay;
 global pfc_learning_rate;
 
+global pfc_max;
+global hpc_max;
+global max_max;
+
+pfc_max = 4;
+hpc_max = 8;
+max_max = 12;
+
 INP_STR = 2;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 4; 
+runs = 2; 
 cycles = 10;
 
 global REPL;
@@ -60,7 +68,17 @@ for e=1:1
     while v <= 3
         VALUE = v;
 
-        for i = 1:runs 
+        for i = 1:runs
+            TRIAL_DIR = horzcat(DIR, '\', num2str(VALUE), '-', ...
+                num2str(VALUE), ';', num2str(i), '\');
+            mkdir(TRIAL_DIR);
+            init_val = VALUE;
+
+%             [place_responses(i,:) side_pref checked_place first_checked] = ...
+%             experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
+
+            [worm_trial pean_trial] = ...
+            experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
         
             worm_trials{i} = worm_trial;
             pean_trials{i} = pean_trial;
@@ -109,7 +127,7 @@ end
 
 function showTrials(avg_side_preference, avg_first_checks, e, type)
 
-       ffc = 'fig_first_check';
+    ffc = 'fig_first_check';
     fsp = 'fig_side_prefs';
     
     global DIR;

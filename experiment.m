@@ -244,6 +244,9 @@ function [worm_trial pean_trial] = ...
     global hpc_learning;
     global pfc_learning;
     
+    global hpc_cur_decay;
+    hpc_cur_decay = 0;
+
     hpc_learning = 0;
     pfc_learning = 0;
 
@@ -251,7 +254,7 @@ function [worm_trial pean_trial] = ...
     
     food_types = [peanut worm];
     rev_food = [worm peanut];
-    time_lengths = [4, 120];
+    time_lengths = [120, 4];
 
     type_order = randperm(2);
     time_order = randperm(2);
@@ -263,7 +266,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 4;
+        duration = 1;
     end
 
     PVAL = 1;
@@ -321,7 +324,7 @@ function [worm_trial pean_trial] = ...
             spots = spot_shuffler(14);
 
             if is_testing
-                if current_time == 120
+                if (current_time == 120 && current_type == 1)
                     val = value;
                 else
                     val = REPL;
@@ -329,14 +332,18 @@ function [worm_trial pean_trial] = ...
             else
                 val = value;
             end
+            
+            disp('training value is...');
+            disp(val);
 
             for q = 1:current_time
+                hpc_learning = 1;
                 if ~is_testing
                     pfc_learning = 1;
                 end
 
                 for i = spots
-                    input_decay = (60/(60+q));
+                    input_decay = (30/(30+q));
                     if place(i,:) == WORM
                         v = val(worm);
                     else
@@ -366,7 +373,7 @@ function [worm_trial pean_trial] = ...
             m2 = mean(pfc_cumul_activity) / (12*14);
             activity2 = mean(m2);
             disp(['PFC Consolidate: ', num2str(activity2)]);
-            
+            hpc_cur_decay = 0;
         end
         
         % only if it is testing is the judging protocol enacted
@@ -411,14 +418,11 @@ function [worm_trial pean_trial] = ...
                         input_decay = (6/(6+q));
                         if place(i,:) == WORM
                             v = val(worm);
-                            HVAL = 5;
                         else
                             v = val(peanut);
-                            HVAL = v;
                         end
-
+                        HVAL = v;
                         PVAL = v;
-                        
 
                         cycle_net( PLACE_SLOTS(i,:)*input_decay, ...
                                    place(i,:)*input_decay, cycles, v);
@@ -429,7 +433,7 @@ function [worm_trial pean_trial] = ...
                 end
                 pean_trial = trial;
             end
-            
+                       
         % if training then just reverse time order after trial
         else
             time_order = [time_order(2) time_order(1)];
