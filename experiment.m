@@ -266,7 +266,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 1;
+        duration = 4;
     end
 
     PVAL = 1;
@@ -324,7 +324,7 @@ function [worm_trial pean_trial] = ...
             spots = spot_shuffler(14);
 
             if is_testing
-                if (current_time == 120 && current_type == 1)
+                if (current_time == 120)
                     val = value;
                 else
                     val = REPL;
@@ -343,13 +343,13 @@ function [worm_trial pean_trial] = ...
                 end
 
                 for i = spots
-                    input_decay = (30/(30+q));
+                    input_decay = (60/(120+q));
                     if place(i,:) == WORM
                         v = val(worm);
                     else
                         v = val(peanut);
                     end
-
+                    
                     PVAL = v;
                     HVAL = v;
                         

@@ -59,8 +59,8 @@ function returnable = cycle_place(place_in, input_weights, input)
 %                 HVAL = temp;
 %             end
             
-            w_hpc_to_food = w_hpc_to_place - decay * (temp_w_h_p - w_hpc_to_place);
-            w_food_to_hpc = w_place_to_hpc - decay * (temp_w_p_h - w_place_to_hpc);
+%             w_hpc_to_food = w_hpc_to_place - decay * (temp_w_h_p - w_hpc_to_place);
+%             w_food_to_hpc = w_place_to_hpc - decay * (temp_w_p_h - w_place_to_hpc);
         end
         
         if pfc_learning

@@ -3,7 +3,7 @@ clear;
 close all;
 clc;
 
-global learning_rate;
+global learning_rate; 
 global gain_oja;
 global INP_STR;
 global cycles;
@@ -12,19 +12,20 @@ global hpc_decay;
 global pfc_learning_rate;
 
 global pfc_max;
-global hpc_max;
-global max_max;
+global hpc_max;  
+global max_max_weight;
 
 pfc_max = 4;
 hpc_max = 8;
-max_max = 12;
+max_max_weight = 12;
 
 INP_STR = 2;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 2; 
-cycles = 10;
+runs = 1; 
+cycles = 11;
+% cycles = 8;
 
 global REPL;
 global PILF;
@@ -96,11 +97,19 @@ for e=1:1
             disp(message);
         end
         
+        if sum(p_first_checkeds) == 0
+            p_avg_first_checks(v) = 0;
+        else
+            p_avg_first_checks(v) = sum(p_first_checkeds) / runs;
+        end
         
-        p_avg_first_checks(v) = sum(p_first_checkeds) / runs;
+        if sum(w_first_checkeds) == 0
+            w_avg_first_checks(v) = 0;
+        else
+            w_avg_first_checks(v) = sum(w_first_checkeds) /  runs;
+        end
+
         p_avg_side_preference(v) = mean(p_place_stats(:,1));
- 
-        w_avg_first_checks(v) = sum(w_first_checkeds) /  runs;
         w_avg_side_preference(v) = mean(w_place_stats(:,1));
         
         value_groups{v} = [VALUE worm_trials pean_trials]; 

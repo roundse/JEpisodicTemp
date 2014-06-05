@@ -17,6 +17,8 @@ global learning_rate;
 global TRIAL_DIR;
 global PLACE_SLOTS;
 
+global hpc_cur_decay;
+
 filename = horzcat(TRIAL_DIR, section, '_variables');
 save(filename);
 
