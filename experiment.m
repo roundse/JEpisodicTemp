@@ -397,16 +397,23 @@ function [worm_trial pean_trial] = ...
             % need to be changed as well!
             if (trial.('type_order') == worm)
                 worm_trial = trial;
-            else
                 
+            else
                 % jay considers input given
                 spots = spot_shuffler(14);
-
-                if current_time == 120
+                
+                if is_testing
+                    not_replenish =  current_type ~= worm;
+                else
+                    not_replenish = current_time == 120;
+                end
+                
+                if not_replenish
                     val = value;
                 else
                     val = REPL;
                 end
+                
 
                 for q = 1:12
                     hpc_learning = 1;

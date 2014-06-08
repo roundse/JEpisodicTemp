@@ -1,3 +1,9 @@
+% IMPORTANTE NOTE ~~~READ!~~
+% - only replenish is being checked now, needs be turned on at line 75 &
+% 129 & 170 & 161
+% - also I changed line 405 in experiment to check for worm instead of time
+%   during testing, because testing is set up differently, so it was wrong
+
 function jay_episodic()
 clear;
 close all;
@@ -23,21 +29,21 @@ INP_STR = 2;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 1; 
+runs = 2; 
 cycles = 11;
 % cycles = 8;
 
-global REPL;
+global REPL; 
 global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 5.0   2 ];
+REPL = [ 5.0   2 ]; 
 PILF = [ 2.0   2 ];
 DEGR = [ 0.0   2 ];
 
 gain_oja = 0.7;
-learning_rate = 0.4;
+learning_rate = 0.55;
 pfc_learning_rate = 0.04;
 
 
@@ -66,7 +72,7 @@ is_disp_weights = 0;
 % profile on
 for e=1:1
     v = 1;
-    while v <= 3
+    while v  <= 3
         VALUE = v;
 
         for i = 1:runs
