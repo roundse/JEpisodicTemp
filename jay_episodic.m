@@ -29,7 +29,7 @@ INP_STR = 2;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 2; 
+runs = 1; 
 cycles = 11;
 % cycles = 8;
 

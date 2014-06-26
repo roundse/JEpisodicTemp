@@ -30,7 +30,6 @@ else
     if hpc_cur_decay > 1
        disp('HPC DECAY TOO LARGE!!!!!!!!!!!!!!!!!!'); 
     end
-%     decay = .04;
     decay = hpc_cur_decay;
     max = hpc_max;
 end
