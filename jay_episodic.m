@@ -5,31 +5,30 @@
 %   during testing, because testing is set up differently, so it was wrong
 
 function jay_episodic()
-clear;
-close all;
-clc;
+% clear;
+% close all;
+% clc;
 
 global learning_rate; 
 global gain_oja;
 global INP_STR;
 global cycles;
 
-global hpc_decay;
 global pfc_learning_rate;
 
 global pfc_max;
 global hpc_max;  
 global max_max_weight;
 
-pfc_max = 4;
-hpc_max = 8;
-max_max_weight = 12;
+pfc_max = 20;
+hpc_max = 20;
+max_max_weight = 20;
 
-INP_STR = 2;
+INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 1; 
+runs = 7; 
 cycles = 11;
 % cycles = 8;
 
@@ -43,7 +42,7 @@ PILF = [ 2.0   2 ];
 DEGR = [ 0.0   2 ];
 
 gain_oja = 0.7;
-learning_rate = 0.55;
+learning_rate = 0.75;
 pfc_learning_rate = 0.04;
 
 
@@ -129,6 +128,7 @@ for e=1:1
         v = v+1;
     end
         
+    % Some how reordering trials changed the order...
     showTrials(p_avg_side_preference, p_avg_first_checks, e, 'Peanut first');
     showTrials(w_avg_side_preference, w_avg_first_checks, e, 'Worm first');
     

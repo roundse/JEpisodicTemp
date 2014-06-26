@@ -228,11 +228,14 @@ function [worm_trial pean_trial] = ...
     global HVAL;
 
     if VALUE == 1
-        value = REPL;
+        value = DEGR;
+        disp('DEGRADE TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
     elseif VALUE ==2
         value = PILF;
+        disp('PILFER TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     else
-        value = DEGR;
+        value = REPL;
+        disp('REPLENISH TRIAL~~~~~~~~~~~~~~~~~~~~~~~~');
     end
     
     global place;
@@ -266,7 +269,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 4;
+        duration = 2;
     end
 
     PVAL = 1;
@@ -275,8 +278,6 @@ function [worm_trial pean_trial] = ...
     for j=1:duration
         for l=1:2
             is_learning = 0;
-            %reset decay
-            %store longterm memory?
             
             % if testing time is always 4 then 120
             if is_testing
@@ -292,13 +293,19 @@ function [worm_trial pean_trial] = ...
             
             disp([prot_type, ' ', num2str(j)]);
 
-            if current_type == peanut
-                disp('First food to be stored is peanut');
+            if l == 1
+                current_place = 'First';
             else
-                disp('First food to be stored is worm');  
+                current_place = 'Second';
+            end
+            
+            if current_type == peanut
+                disp([current_place, ' food to be stored is peanut']);
+            else
+                disp([current_place, ' food to be stored is worm']);  
             end
 
-            disp(['First consolidation period is: ', num2str(current_time)]);
+            disp([current_place, ' consolidation period is: ', num2str(current_time)]);
 
             if is_testing
                 if current_type == worm
@@ -309,7 +316,7 @@ function [worm_trial pean_trial] = ...
             else
                 spots = horzcat(spot_shuffler(7), spot_shuffler(8,14));
             end
-            
+           
             val = 1;
 
             for i = spots
@@ -324,11 +331,17 @@ function [worm_trial pean_trial] = ...
             spots = spot_shuffler(14);
 
             if is_testing
-                if (current_time == 120)
-                    val = value;
-                else
-                    val = REPL;
-                end
+                is_replenish =  current_type == worm & current_time == 4;
+            else
+                is_replenish = current_time == 4;
+            end
+            
+            if value == PILF
+                is_replenish = 0;
+            end
+
+            if is_replenish
+                val = REPL;
             else
                 val = value;
             end
@@ -338,12 +351,8 @@ function [worm_trial pean_trial] = ...
 
             for q = 1:current_time
                 hpc_learning = 1;
-                if ~is_testing
-                    pfc_learning = 1;
-                end
 
                 for i = spots
-                    input_decay = (60/(120+q));
                     if place(i,:) == WORM
                         v = val(worm);
                     else
@@ -353,14 +362,16 @@ function [worm_trial pean_trial] = ...
                     PVAL = v;
                     HVAL = v;
                         
-                    cycle_net( PLACE_SLOTS(i,:)*input_decay, ...
-                               place(i,:)*input_decay, cycles, v);
+                    cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
                 end
 
                 pfc_learning = 0;
-                hpc_learning = 0;
+                if q == 2
+                    hpc_learning = 0;
+                end
             end
-                        
+            
+            
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
             disp('Current value is:');
@@ -399,51 +410,50 @@ function [worm_trial pean_trial] = ...
                 worm_trial = trial;
                 
             else
-                % jay considers input given
-                spots = spot_shuffler(14);
                 
-                if is_testing
-                    not_replenish =  current_type ~= worm;
-                else
-                    not_replenish = current_time == 120;
-                end
-                
-                if not_replenish
-                    val = value;
-                else
-                    val = REPL;
-                end
-                
-
-                for q = 1:12
-                    hpc_learning = 1;
-                    if ~is_testing
-                        pfc_learning = 1;
-                    end
-
-                    for i = spots
-                        input_decay = (6/(6+q));
-                        if place(i,:) == WORM
-                            v = val(worm);
-                        else
-                            v = val(peanut);
-                        end
-                        HVAL = v;
-                        PVAL = v;
-
-                        cycle_net( PLACE_SLOTS(i,:)*input_decay, ...
-                                   place(i,:)*input_decay, cycles, v);
-                    end
-
-                    pfc_learning = 0;
-                    hpc_learning = 0;
-                end
                 pean_trial = trial;
             end
-                       
         % if training then just reverse time order after trial
         else
             time_order = [time_order(2) time_order(1)];
         end
+        
+        % jay considers input given
+        spots = spot_shuffler(14);
+
+        if is_testing
+            is_replenish =  current_type == worm & current_time == 4;
+        else
+            is_replenish = current_time == 4;
+        end
+
+        if is_replenish
+            val = REPL;
+        else
+            val = value;
+        end
+
+        for q = 1:12
+%             hpc_learning = 1;
+            if ~is_testing
+                pfc_learning = 1;
+            end
+
+            for i = spots
+                if place(i,:) == WORM
+                    v = val(worm);
+                else
+                    v = val(peanut);
+                end
+                HVAL = v;
+                PVAL = v;
+
+                cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
+            end
+
+            pfc_learning = 0;
+            hpc_learning = 0;
+        end       
+
     end
 end
