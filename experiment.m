@@ -258,7 +258,8 @@ function [worm_trial pean_trial] = ...
     food_types = [peanut worm];
     rev_food = [worm peanut];
     time_lengths = [120, 4];
-
+%     time_lengths = [1, 1];
+    
     type_order = randperm(2);
     time_order = randperm(2);
     
@@ -293,10 +294,14 @@ function [worm_trial pean_trial] = ...
             
             disp([prot_type, ' ', num2str(j)]);
 
-            if l == 1
-                current_place = 'First';
-            else
-                current_place = 'Second';
+            if is_testing
+                if l == 1
+                    current_place = 'First';
+                else
+                    current_place = 'Second';
+                end
+            else 
+                current_place = 'First stored food is';
             end
             
             if current_type == peanut
@@ -314,7 +319,11 @@ function [worm_trial pean_trial] = ...
                     spots = spot_shuffler(8,14);
                 end        
             else
-                spots = horzcat(spot_shuffler(7), spot_shuffler(8,14));
+                if current_type == worm
+                    spots = horzcat(spot_shuffler(7), spot_shuffler(8,14));
+                else
+                    spots = horzcat(spot_shuffler(8,14), spot_shuffler(7));
+                end   
             end
            
             val = 1;
@@ -328,7 +337,18 @@ function [worm_trial pean_trial] = ...
             end
             
             % consolidate
-            spots = spot_shuffler(14);
+%             spots = spot_shuffler(14);
+
+
+            if is_testing
+               if current_time == 4
+                    if current_type == peanut
+                        spots = horzcat(spot_shuffler(7), spot_shuffler(8,14));
+                    else
+                        spots = horzcat(spot_shuffler(8,14), spot_shuffler(7));
+                    end  
+               end
+            end
 
             if is_testing
                 is_replenish =  current_type == worm & current_time == 4;
@@ -349,9 +369,26 @@ function [worm_trial pean_trial] = ...
             disp('training value is...');
             disp(val);
 
+            hpc_cumul_activity = 0;
+            pfc_cumul_activity = 0;
+            
             for q = 1:current_time
                 hpc_learning = 1;
-
+                
+                if is_testing
+                   if current_time == 4
+                        spots = spot_shuffler(1,14); 
+                   else
+                        if current_type == worm
+                            spots = spot_shuffler(7);
+                        else
+                            spots = spot_shuffler(8,14);
+                        end  
+                   end
+                else
+                    spots = spot_shuffler(1,14);
+                end
+      
                 for i = spots
                     if place(i,:) == WORM
                         v = val(worm);
@@ -365,47 +402,61 @@ function [worm_trial pean_trial] = ...
                     cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
                 end
 
-                pfc_learning = 0;
-                if q == 2
-                    hpc_learning = 0;
-                end
             end
-            
+            hpc_learning = 0;
             
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
             disp('Current value is:');
             disp(val);
             
-            m1 = mean(hpc_cumul_activity) / (12*14);
+            m1 = mean(hpc_cumul_activity) / (current_time*14);
             activity1 = mean(m1);
             disp(['HPC Consolidate: ', num2str(activity1)]);
 
-            m2 = mean(pfc_cumul_activity) / (12*14);
+            m2 = mean(pfc_cumul_activity) / (current_time*14);
             activity2 = mean(m2);
             disp(['PFC Consolidate: ', num2str(activity2)]);
             hpc_cur_decay = 0;
         end
         
-        % only if it is testing is the judging protocol enacted
-        % then flip food order
-        % finally collect variables and store based on first food type
+        if is_testing
+            is_replenish =  current_type == worm & current_time == 4;
+        else
+            is_replenish = current_time == 4;
+        end
+        
         if is_testing
             [checked_places, side_pref, avg_checks, first_checked] ...
                  = place_slot_check;
 
             food_types = [food_types(2) food_types(1)];
-             
+            
+            if is_replenish
+                if value == DEGR
+                    expected = 6;
+                elseif value == PILF
+                    expected = 4;  
+                else
+                    expected = 6;
+                end
+            else
+                if value == DEGR
+                    expected = 1;
+                elseif value == PILF
+                    expected = 4;  
+                else
+                    expected = 6;
+                end 
+            end
+            
             trial = struct('type_order' , food_types(1), ...
                            'check_order', checked_places, ...
                            'first_check', first_checked, ...
                            'side_pref'  , side_pref, ...
+                           'error_pref' , (side_pref-expected)^2, ...
                            'avg_checks' , avg_checks);
 
-            % the worm/pean_trail variables blow need to be changed to a
-            % cell with the index of {end+1} if duration is 3 or greater...
-            % also how the trial variables are handled in jay_episodic will
-            % need to be changed as well!
             if (trial.('type_order') == worm)
                 worm_trial = trial;
                 
@@ -416,16 +467,11 @@ function [worm_trial pean_trial] = ...
         % if training then just reverse time order after trial
         else
             time_order = [time_order(2) time_order(1)];
+            type_order = [type_order(2) type_order(1)];
         end
         
         % jay considers input given
         spots = spot_shuffler(14);
-
-        if is_testing
-            is_replenish =  current_type == worm & current_time == 4;
-        else
-            is_replenish = current_time == 4;
-        end
 
         if is_replenish
             val = REPL;

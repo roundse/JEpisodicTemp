@@ -47,7 +47,7 @@ global PLACE_SLOTS;
 end
 
 function [slot_signal slot] = find_place(place_response)
-global FOODED_SLOTS;
+    global FOODED_SLOTS;
     global PLACE_CELLS;
     
     vars = zeros(PLACE_CELLS,1);
@@ -65,11 +65,10 @@ global FOODED_SLOTS;
 end
 
 function side_pref = side_pref_calc (ranked_slots)
-global PLACE_CELLS;
+    global PLACE_CELLS;
     
     first_side = zeros(PLACE_CELLS,1);
     first_side(ranked_slots<8) = 1;
  
-    side_pref = sum(first_side(1:6));
-
+    side_pref = sum(first_side(1:7));
 end
