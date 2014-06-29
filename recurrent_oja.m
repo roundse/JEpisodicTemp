@@ -26,7 +26,7 @@ if is_pfc
     max = pfc_max;
 else
     eta = learning_rate;
-    hpc_cur_decay = hpc_cur_decay + 0.00001;
+    hpc_cur_decay = hpc_cur_decay + 0.000027;
     if hpc_cur_decay > 1
        disp('HPC DECAY TOO LARGE!!!!!!!!!!!!!!!!!!'); 
     end

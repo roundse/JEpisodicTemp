@@ -44,13 +44,13 @@ for j = 2:cycles
 
     cycle_hpc(hpc_out, w_place_to_hpc, place_out, value);
     cycle_hpc(hpc_out, w_food_to_hpc, food_out, value);
-
+    cycle_hpc(hpc_out, w_food_to_hpc,  food_stim, value);
+    
     cycle_pfc(pfc_out, w_place_to_pfc, place_out, value);
     cycle_pfc(pfc_out, w_food_to_pfc, food_out, value);
     cycle_pfc(pfc_out, w_food_to_pfc, food_stim, value);
     
-    cycle_hpc(hpc_out, w_food_to_hpc,  food_stim, value);
-   
+  
     pfc(j,:) = cycle_pfc(pfc_out, is_learning);         
     hpc(j,:) = cycle_hpc(hpc_out, is_learning);
     place_region(j,:) = cycle_place({place_region(j-1,:), hpc(j,:), ...

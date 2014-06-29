@@ -33,7 +33,7 @@ global PLACE_SLOTS;
         %model
     end
 
-    disp(ranked_slots);
+%     disp(ranked_slots);
     checked_places = ranked_slots;
     side_pref = side_pref_calc(ranked_slots);
     avg_checks = ranked_slots';
@@ -58,6 +58,7 @@ function [slot_signal slot] = find_place(place_response)
     end
        
     slot = find(vars==min(vars));
+    slot = slot(1); % in the unlikely (but still occuring) event there are multiple minimums, just take the first
     slot_signal = FOODED_SLOTS(slot, :);
     a = -2*ones(1,14);
     fs = FOODED_SLOTS(slot,:);
@@ -71,4 +72,6 @@ function side_pref = side_pref_calc (ranked_slots)
     first_side(ranked_slots<8) = 1;
  
     side_pref = sum(first_side(1:7));
+    disp('Worms in first seven checks: ');
+    disp(side_pref);
 end
