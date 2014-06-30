@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 6;
+runs = 10;
 cycles = 11;
 % cycles = 8;
 
