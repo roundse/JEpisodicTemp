@@ -285,7 +285,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 2;
+        duration = 4;
     end
 
     PVAL = 1;
@@ -332,7 +332,7 @@ function [worm_trial pean_trial] = ...
                 %disp([current_place, ' food to be stored is worm']);  
             end
 
-            %disp([current_place, ' consolidation period is: ', num2str(current_time)]);
+            disp([current_place, ' consolidation period is: ', num2str(current_time)]);
 
             if is_testing
                 if current_type == worm
@@ -360,7 +360,6 @@ function [worm_trial pean_trial] = ...
             
             % consolidate
 %             spots = spot_shuffler(14);
-
 
             if is_testing
                if current_time == 4
@@ -451,8 +450,6 @@ function [worm_trial pean_trial] = ...
         if is_testing
             [checked_places, side_pref, avg_checks, first_checked] ...
                  = place_slot_check;
-
-
             
             if is_replenish
                 if value == DEGR
@@ -481,17 +478,23 @@ function [worm_trial pean_trial] = ...
                        
             food_types = [food_types(2) food_types(1)];
 
+            if value == DEGR & trial.('type_order') ~= worm & side_pref < 3
+                disp('bad trial!');
+            elseif value == REPL & trial.('type_order') == worm & side_pref < 4
+                disp('bad trial!');               
+            elseif value == REPL & side_pref < 4
+                disp('bad trial!');
+            end
+            
             if (trial.('type_order') == worm)
                  pean_trial = trial;
-
             else
                  worm_trial = trial;
-
             end
         % if training then just reverse time order after trial
         else
             time_order = [time_order(2) time_order(1)];
-            type_order = [type_order(2) type_order(1)];
+            %type_order = [type_order(2) type_order(1)];
         end
         
         if is_replenish
@@ -527,10 +530,10 @@ function [worm_trial pean_trial] = ...
     end
 
 	if ~is_testing
-        rein_dur = 8;
+        rein_dur = 2;
         
         if value == DEGR
-            short_values = [REPL; value];
+            short_values = [REPL; REPL];
         else
             short_values = [value; value];
         end
@@ -556,7 +559,7 @@ function [worm_trial pean_trial] = ...
             end
         
         end
-
+        
         pfc_learning = 0;
         hpc_learning = 0;    
     end

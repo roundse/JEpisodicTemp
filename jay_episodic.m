@@ -37,15 +37,15 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 5.0   2 ]; 
+REPL = [ 6.0   2 ]; 
 PILF = [ 2.0   2 ];
-DEGR = [-5.0   2 ]; % O X
+DEGR = [-6   2 ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
 gain_oja = 0.7;
-learning_rate = 0.45;
-pfc_learning_rate = 0.02;
+learning_rate = 0.48;
+pfc_learning_rate = 0.04;
 
 
 global pos
