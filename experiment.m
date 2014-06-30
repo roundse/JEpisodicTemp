@@ -285,7 +285,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 4;
+        duration = 2;
     end
 
     PVAL = 1;

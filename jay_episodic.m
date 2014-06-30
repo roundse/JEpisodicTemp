@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 10;
+runs = 3;
 cycles = 11;
 % cycles = 8;
 
@@ -137,6 +137,8 @@ for e=1:1
 
     
     figure;
+    global w_avg_pref_error;
+    global p_avg_pref_error;
     bar(w_avg_pref_error);
     drawnow;
     title('Worm error margin');
@@ -162,6 +164,8 @@ save(filename, 'multi_groups');
 end
 
 function showTrials(avg_side_preference, avg_first_checks, e, type)
+global p_avg_pref_error
+global w_avg_pref_error
     ffc = 'fig_first_check';
     fsp = 'fig_side_prefs';
     
@@ -190,9 +194,9 @@ function showTrials(avg_side_preference, avg_first_checks, e, type)
     figure;
     for i = 1:3
         k = i*2;
-        bar(k-1, avg_side_preference(k-1),'b');
+        barwitherr(p_avg_pref_error, k, avg_side_preference(k),'r');
         hold on
-        bar(k, avg_side_preference(k),'r');
+        barwitherr(w_avg_pref_error, k-1, avg_side_preference(k-1),'b');
         hold on
     end
     drawnow;
