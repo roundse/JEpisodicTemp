@@ -192,7 +192,7 @@ global TRIAL_DIR;
 
 filename = horzcat(TRIAL_DIR, 'after final trial ', '_variables');
 
-save(filename);
+%save(filename);
 
 varlist = {'hpc','place_region','food', 'place_in_queue', ...
     'place_weight_queue', 'hpc_in_queue', 'hpc_weight_queue', ...

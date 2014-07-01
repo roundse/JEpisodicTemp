@@ -20,7 +20,7 @@ global PLACE_SLOTS;
 global hpc_cur_decay;
 
 filename = horzcat(TRIAL_DIR, section, '_variables');
-save(filename);
+%save(filename);
 
 if is_disp_weights
     figure;

@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 10;
+runs = 5;
 cycles = 9;
 % cycles = 8;
 
@@ -109,8 +109,8 @@ for e=1:1
             all_side_pref = [w_place_stats p_place_stats];
             all_checks = [w_place_stats p_place_stats];
             
-            save(trial_file_name, 'all_checks');
-            save(pref_file_name, 'all_side_pref');
+%            save(trial_file_name, 'all_checks');
+ %           save(pref_file_name, 'all_side_pref');
             
         end
         
