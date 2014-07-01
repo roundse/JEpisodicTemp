@@ -22,13 +22,13 @@ global max_max_weight;
 
 pfc_max = 8;
 hpc_max = 8;
-max_max_weight = 20;
+max_max_weight = 10;
 
 INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 3;
+runs = 20;
 cycles = 11;
 % cycles = 8;
 
@@ -44,8 +44,8 @@ DEGR = [-6   2 ]; % O X
 %pfc: prefers flip of what was last presented...
 
 gain_oja = 0.7;
-learning_rate = 0.48;
-pfc_learning_rate = 0.04;
+learning_rate = 0.47;
+pfc_learning_rate = 0.032;
 
 
 global pos
@@ -137,8 +137,6 @@ for e=1:1
 
     
     figure;
-    global w_avg_pref_error;
-    global p_avg_pref_error;
     bar(w_avg_pref_error);
     drawnow;
     title('Worm error margin');
@@ -164,8 +162,6 @@ save(filename, 'multi_groups');
 end
 
 function showTrials(avg_side_preference, avg_first_checks, e, type)
-global p_avg_pref_error
-global w_avg_pref_error
     ffc = 'fig_first_check';
     fsp = 'fig_side_prefs';
     
@@ -194,9 +190,9 @@ global w_avg_pref_error
     figure;
     for i = 1:3
         k = i*2;
-        barwitherr(p_avg_pref_error, k, avg_side_preference(k),'r');
+        bar(k-1, avg_side_preference(k-1),'b');
         hold on
-        barwitherr(w_avg_pref_error, k-1, avg_side_preference(k-1),'b');
+        bar(k, avg_side_preference(k),'r');
         hold on
     end
     drawnow;

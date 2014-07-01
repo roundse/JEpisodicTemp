@@ -285,7 +285,7 @@ function [worm_trial pean_trial] = ...
     if is_testing
         duration = 2;
     else
-        duration = 2;
+        duration = 4;
     end
 
     PVAL = 1;
@@ -494,7 +494,7 @@ function [worm_trial pean_trial] = ...
         % if training then just reverse time order after trial
         else
             time_order = [time_order(2) time_order(1)];
-            %type_order = [type_order(2) type_order(1)];
+            type_order = [type_order(2) type_order(1)];
         end
         
         if is_replenish
