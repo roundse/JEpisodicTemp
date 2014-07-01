@@ -9,7 +9,7 @@ clear;
 close all;
 clc;
 
-global learning_rate; 
+global learning_rate;
 global gain_oja;
 global INP_STR;
 global cycles;
@@ -17,35 +17,35 @@ global cycles;
 global pfc_learning_rate;
 
 global pfc_max;
-global hpc_max;  
+global hpc_max;
 global max_max_weight;
 
 pfc_max = 8;
 hpc_max = 8;
-max_max_weight = 10;
+max_max_weight = 20;
 
 INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 20;
+runs = 4;
 cycles = 11;
 % cycles = 8;
 
-global REPL;  
+global REPL;
 global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.0   2 ]; 
+REPL = [ 5.0   2 ];
 PILF = [ 2.0   2 ];
-DEGR = [-6   2 ]; % O X
+DEGR = [-5     2  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
 gain_oja = 0.7;
-learning_rate = 0.47;
-pfc_learning_rate = 0.032;
+learning_rate = 0.48;
+pfc_learning_rate = 0.04;
 
 
 global pos
@@ -61,7 +61,8 @@ w_place_stats = zeros(runs, 1);
 p_place_responses = zeros(runs, 14);
 p_place_stats = zeros(runs, 1);
 filename = horzcat(DIR, '\trial_data', '.mat');
-
+trial_file_name = horzcat(DIR, '\check_orders', '.mat');
+pref_file_name = horzcat(DIR, '\side_prefs', '.mat');
 worm_trials = {};
 pean_trials = {};
 
@@ -75,22 +76,22 @@ for e=1:1
     v = 1;
     while v  <= 3
         VALUE = v;
-
+        
         for i = 1:runs
             TRIAL_DIR = horzcat(DIR, '\', num2str(VALUE), '-', ...
                 num2str(VALUE), ';', num2str(i), '\');
             mkdir(TRIAL_DIR);
             init_val = VALUE;
-
-%             [place_responses(i,:) side_pref checked_place first_checked] = ...
-%             experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
-
+            
+            %             [place_responses(i,:) side_pref checked_place first_checked] = ...
+            %             experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
+            
             [worm_trial pean_trial] = ...
-            experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
-        
+                experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
+            
             worm_trials{i} = worm_trial;
             pean_trials{i} = pean_trial;
-
+            
             w_place_stats(i) = mean(worm_trial.('side_pref'));
             w_checked_places{i} = worm_trial.('check_order');
             w_first_checkeds(i) = worm_trial.('first_check');
@@ -104,6 +105,13 @@ for e=1:1
             is_disp_weights = false;
             message = horzcat('trial ', num2str(i), ' complete');
             disp(message);
+            
+            all_side_pref = [w_place_stats p_place_stats];
+            all_checks = [w_place_stats p_place_stats];
+            
+            save(trial_file_name, 'all_checks');
+            save(pref_file_name, 'all_side_pref');
+            
         end
         
         if sum(p_first_checkeds) == 0
@@ -117,41 +125,41 @@ for e=1:1
         else
             w_avg_first_checks(v) = sum(w_first_checkeds) /  runs;
         end
-
-        p_avg_side_preference(v) = mean(p_place_stats);
-        p_avg_pref_error(v) = mean(p_pref_error);
-
-        w_avg_side_preference(v) = mean(w_place_stats);
-        w_avg_pref_error(v) = mean(w_pref_error);
         
-        value_groups{v} = [VALUE worm_trials pean_trials]; 
-%         avg_first_checks(v) = sum(first_checkeds) / runs;
-%         avg_side_preference(v) = mean(place_stats(:,1));
-% 
-%         expirments{v} = {INP_STR, VALUE, mean(place_stats(:,2)), avg_side_preference, ...
-%             place_responses, place_stats, checked_places, ...
-%             avg_first_checks, avg_side_preference};
-
+        p_avg_side_preference(v) = mean(p_place_stats);
+        p_avg_pref_error(v) = std(p_pref_error)/ sqrt(length(p_pref_error));
+        
+        w_avg_side_preference(v) = mean(w_place_stats);
+        w_avg_pref_error(v) = std(w_pref_error)/ sqrt(length(w_pref_error));
+        
+        value_groups{v} = [VALUE worm_trials pean_trials];
+        %         avg_first_checks(v) = sum(first_checkeds) / runs;
+        %         avg_side_preference(v) = mean(place_stats(:,1));
+        %
+        %         expirments{v} = {INP_STR, VALUE, mean(place_stats(:,2)), avg_side_preference, ...
+        %             place_responses, place_stats, checked_places, ...
+        %             avg_first_checks, avg_side_preference};
+        
         v = v+1;
     end
-
     
-    figure;
-    bar(w_avg_pref_error);
-    drawnow;
-    title('Worm error margin');
-
-
-    figure;
-    bar(p_avg_pref_error);
-    drawnow;
-    title('Peanut error margin');
+    
+    %     figure;
+    %     bar(w_avg_pref_error);
+    %     drawnow;
+    %     title('Worm error margin');
+    %
+    %
+    %     figure;
+    %     bar(p_avg_pref_error);
+    %     drawnow;
+    %     title('Peanut error margin');
     
     % Some how reordering trials changed the order...
-    showTrials(p_avg_side_preference, p_avg_first_checks, ... 
-       e, 'P then W');
-    showTrials(w_avg_side_preference, w_avg_first_checks, ...
-       e, 'W then P');
+    showTrials(p_avg_pref_error, p_avg_side_preference, p_avg_first_checks, ...
+        e, 'P then W');
+    showTrials(w_avg_pref_error, w_avg_side_preference, w_avg_first_checks, ...
+        e, 'W then P');
     
     multi_groups{e} = value_groups;
 end
@@ -161,43 +169,51 @@ save(filename, 'multi_groups');
 % profile off
 end
 
-function showTrials(avg_side_preference, avg_first_checks, e, type)
-    ffc = 'fig_first_check';
-    fsp = 'fig_side_prefs';
-    
-    global DIR;
-    
-    figure;
-    bar(avg_first_checks);
-    drawnow;
-    title_message = horzcat(type, ' First Check %');
-    title(title_message);
-    % strrep(ffc, '%d', num2str(e))
+function showTrials(error, avg_side_preference, avg_first_checks, e, type)
+ffc = 'fig_first_check';
+fsp = 'fig_side_prefs';
 
-    saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(e), type), 'fig');
-    
-    temp = zeros(6,1);
-    
-    for k=1:3
-        l = 2*k;
-        temp(l-1) = avg_side_preference(k);
+global DIR;
 
-        temp(l) = 7 - avg_side_preference(k);
-    end
+figure;
+bar(avg_first_checks);
+drawnow;
+title_message = horzcat(type, ' First Check %');
+title(title_message);
+% strrep(ffc, '%d', num2str(e))
 
-    avg_side_preference = temp;
+%    saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(e), type), 'fig');
 
-    figure;
-    for i = 1:3
-        k = i*2;
-        bar(k-1, avg_side_preference(k-1),'b');
-        hold on
-        bar(k, avg_side_preference(k),'r');
-        hold on
-    end
-    drawnow;
-    title_message = horzcat(type, ' Side Preferences %');
-    title(title_message);
-   
-    saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(e), type), 'fig');
+temp = zeros(3,2);
+
+for cond=1:3
+    %l = 2*k;
+    %     temp(l-1) = avg_side_preference(k);
+    %     e(l-1) = error(k);
+    temp(cond, 1) = avg_side_preference(cond);
+    temp(cond, 2) = 7 - avg_side_preference(cond);
+    e(cond, 1) = error(cond);
+    e(cond, 2) = 7 - error(cond);
+end
+
+avg_side_preference = temp;
+error = e;
+
+figure;
+barwitherr(error, avg_side_preference);
+set(gca,'XTickLabel',{'Degrade','Pilfer','Replenish'});
+legend('worm','peanut');
+ylabel('Avg Number of Checks');
+% for i = 1:3
+%     k = i*2;
+%     barwitherr(error(k-1), k-1, avg_side_preference(k-1),'b');
+%     hold on
+%     barwitherr(error(k), k, avg_side_preference(k),'r');
+%     hold on
+% end
+% drawnow;
+title_message = horzcat(type, ' Side Preferences %');
+title(title_message);
+
+%saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(e), type), 'fig');
 end
