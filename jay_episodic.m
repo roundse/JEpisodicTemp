@@ -28,8 +28,8 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 4;
-cycles = 11;
+runs = 10;
+cycles = 9;
 % cycles = 8;
 
 global REPL;
@@ -74,7 +74,7 @@ is_disp_weights = 0;
 % profile on
 for e=1:1
     v = 1;
-    while v  <= 3
+    while v  <= 2
         VALUE = v;
         
         for i = 1:runs
@@ -184,9 +184,9 @@ title(title_message);
 
 %    saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(e), type), 'fig');
 
-temp = zeros(3,2);
+temp = zeros(2,2);
 
-for cond=1:3
+for cond=1:2
     %l = 2*k;
     %     temp(l-1) = avg_side_preference(k);
     %     e(l-1) = error(k);
@@ -201,7 +201,7 @@ error = e;
 
 figure;
 barwitherr(error, avg_side_preference);
-set(gca,'XTickLabel',{'Degrade','Pilfer','Replenish'});
+set(gca,'XTickLabel',{'Degrade','Replenish'});
 legend('worm','peanut');
 ylabel('Avg Number of Checks');
 % for i = 1:3
