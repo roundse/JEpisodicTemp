@@ -15,7 +15,7 @@ global INP_STR;
 global cycles;
 
 global pfc_learning_rate;
-
+%TESTING
 global pfc_max;
 global hpc_max;
 global max_max_weight;
