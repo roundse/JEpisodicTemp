@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 14;
+runs = 6;
 cycles = 9;
 % cycles = 8;
 
@@ -38,8 +38,8 @@ global DEGR;
 
 %      Worm   Peanut
 REPL = [ 6.0   2 ];
-PILF = [ 2.0   2 ];
-DEGR = [-5.0     2  ]; % O X
+PILF = [ 2.5   2 ];
+DEGR = [-5.0   2  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
