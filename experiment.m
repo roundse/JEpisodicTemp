@@ -192,7 +192,7 @@ global TRIAL_DIR;
 
 filename = horzcat(TRIAL_DIR, 'after final trial ', '_variables');
 
-%save(filename);
+save(filename);
 
 varlist = {'hpc','place_region','food', 'place_in_queue', ...
     'place_weight_queue', 'hpc_in_queue', 'hpc_weight_queue', ...
@@ -273,7 +273,7 @@ function [worm_trial pean_trial] = ...
     food_types = [peanut worm];
     rev_food = [worm peanut];
     time_lengths = [120, 4];
-%     time_lengths = [1, 1];
+    %time_lengths = [1, 1];
     
     type_order = randperm(2);
     time_order = randperm(2);

@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 14;
+runs = 5;
 cycles = 9;
 % cycles = 8;
 
@@ -37,15 +37,15 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.0   2 ];
+REPL = [ 5.0   2 ];
 PILF = [ 2.0   2 ];
-DEGR = [-5.0     2  ]; % O X
+DEGR = [-5     2  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
 gain_oja = 0.7;
-learning_rate = 0.45;
-pfc_learning_rate = 0.015;
+learning_rate = 0.48;
+pfc_learning_rate = 0.02;
 
 
 global pos
@@ -169,7 +169,7 @@ save(filename, 'multi_groups');
 % profile off
 end
 
-function showTrials(error, avg_side_preference, avg_first_checks, epp, type)
+function showTrials(error, avg_side_preference, avg_first_checks, e, type)
 ffc = 'fig_first_check';
 fsp = 'fig_side_prefs';
 
@@ -182,7 +182,7 @@ title_message = horzcat(type, ' First Check %');
 title(title_message);
 % strrep(ffc, '%d', num2str(e))
 
-saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(epp), type), 'fig');
+saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(e), type), 'fig');
 
 temp = zeros(2,2);
 
@@ -193,7 +193,7 @@ for cond=1:3
     temp(cond, 1) = avg_side_preference(cond);
     temp(cond, 2) = 7 - avg_side_preference(cond);
     e(cond, 1) = error(cond);
-    e(cond, 2) = error(cond);
+    e(cond, 2) = 7 - error(cond);
 end
 
 avg_side_preference = temp;
@@ -201,7 +201,7 @@ error = e;
 
 figure;
 barwitherr(error, avg_side_preference);
-set(gca,'XTickLabel',{'Degrade','Replenish', 'Pilfer'});
+set(gca,'XTickLabel',{'Degrade','Replenish'});
 legend('worm','peanut');
 ylabel('Avg Number of Checks');
 % for i = 1:3
@@ -214,6 +214,6 @@ ylabel('Avg Number of Checks');
 % drawnow;
 title_message = horzcat(type, ' Side Preferences %');
 title(title_message);
-saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(epp), type), 'fig');
 
+saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(e), type), 'fig');
 end
