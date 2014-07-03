@@ -37,7 +37,7 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.5   2.0 ];
+REPL = [ 6.4   2.0 ];
 PILF = [ 3.0   2.0 ];
 DEGR = [-9.0   2.0  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
