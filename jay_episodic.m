@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 6;
+runs = 10;
 cycles = 9;
 % cycles = 8;
 
@@ -38,7 +38,7 @@ global DEGR;
 
 %      Worm   Peanut
 REPL = [ 6.0   2 ];
-PILF = [ 2.5   2 ];
+PILF = [ 3.75   2 ];
 DEGR = [-5.0   2  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
@@ -157,9 +157,9 @@ for e=1:1
     
     % Some how reordering trials changed the order...
     showTrials(p_avg_pref_error, p_avg_side_preference, p_avg_first_checks, ...
-        e, 'P then W');
+        e, '4 HR Trial');
     showTrials(w_avg_pref_error, w_avg_side_preference, w_avg_first_checks, ...
-        e, 'W then P');
+        e, '124 HR Trial');
     
     multi_groups{e} = value_groups;
 end
@@ -190,8 +190,8 @@ for cond=1:3
     %l = 2*k;
     %     temp(l-1) = avg_side_preference(k);
     %     e(l-1) = error(k);
-    temp(cond, 1) = avg_side_preference(cond);
-    temp(cond, 2) = 7 - avg_side_preference(cond);
+    temp(cond, 1) = 7 - avg_side_preference(cond);
+    temp(cond, 2) = avg_side_preference(cond);
     e(cond, 1) = error(cond);
     e(cond, 2) = error(cond);
 end
@@ -202,7 +202,7 @@ error = e;
 figure;
 barwitherr(error, avg_side_preference);
 set(gca,'XTickLabel',{'Degrade','Replenish', 'Pilfer'});
-legend('worm','peanut');
+legend('peanut','worm');
 ylabel('Avg Number of Checks');
 % for i = 1:3
 %     k = i*2;
@@ -212,7 +212,7 @@ ylabel('Avg Number of Checks');
 %     hold on
 % end
 % drawnow;
-title_message = horzcat(type, ' Side Preferences %');
+title_message = horzcat(type, ' Side Preference');
 title(title_message);
 saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(epp), type), 'fig');
 
