@@ -37,9 +37,9 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.4   2.0 ];
-PILF = [ 3.0   2.0 ];
-DEGR = [-9.0   2.0  ]; % O X
+REPL = [ 6.5   2 ];
+PILF = [ 3.0   2 ];
+DEGR = [-9.0   2  ]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
@@ -200,18 +200,18 @@ avg_side_preference = temp;
 error = e;
 
 figure;
-barwitherr(error, avg_side_preference);
-set(gca,'XTickLabel',{'Degrade','Replenish', 'Pilfer'});
+%barwitherr(error, avg_side_preference);
+for cond = 1:3
+    k = cond*2;
+    barwitherr(error(cond,1), k-1, avg_side_preference(cond,1),'b');
+    hold on
+    barwitherr(error(cond,2), k, avg_side_preference(cond,2),'r');
+    hold on
+end
+set(gca,'XTick', [1.5 3.5 5.5], 'XTickLabel',{'Degrade','Replenish','Pilfer'});
 legend('peanut','worm');
 ylabel('Avg Number of Checks');
-% for i = 1:3
-%     k = i*2;
-%     barwitherr(error(k-1), k-1, avg_side_preference(k-1),'b');
-%     hold on
-%     barwitherr(error(k), k, avg_side_preference(k),'r');
-%     hold on
-% end
-% drawnow;
+drawnow;
 title_message = horzcat(type, ' Side Preference');
 title(title_message);
 saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(epp), type), 'fig');
