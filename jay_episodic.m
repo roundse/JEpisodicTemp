@@ -28,7 +28,7 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 3;
+runs = 10;
 cycles = 9;
 % cycles = 8;
 
@@ -37,9 +37,9 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.4   2 ];
-PILF = [ 3.0   2 ];
-DEGR = [-9.0   2  ]; % O X
+REPL = [ 6.4   2.0];
+PILF = [ 3.0   2.0];
+DEGR = [-9.0   2.0]; % O X
 %hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
 %pfc: prefers flip of what was last presented...
 
@@ -126,11 +126,13 @@ for e=1:1
             w_avg_first_checks(v) = sum(w_first_checkeds) /  runs;
         end
         
-        p_avg_side_preference(v) = mean(p_place_stats);
-        p_avg_pref_error(v) = std(p_pref_error)/ sqrt(length(p_pref_error));
+        p_place_stats
+        p_avg_side_preference(v) = mean(p_place_stats)
+        p_avg_pref_error(v) = std(p_place_stats)/ sqrt(length(p_place_stats));
         
-        w_avg_side_preference(v) = mean(w_place_stats);
-        w_avg_pref_error(v) = std(w_pref_error)/ sqrt(length(w_pref_error));
+        w_place_stats
+        w_avg_side_preference(v) = mean(w_place_stats)
+        w_avg_pref_error(v) = std(w_place_stats)/ sqrt(length(w_place_stats));
         
         value_groups{v} = [VALUE worm_trials pean_trials];
         %         avg_first_checks(v) = sum(first_checkeds) / runs;
@@ -157,9 +159,9 @@ for e=1:1
     
     % Some how reordering trials changed the order...
     showTrials(p_avg_pref_error, p_avg_side_preference, p_avg_first_checks, ...
-        e, '4 HR Trial');
-    showTrials(w_avg_pref_error, w_avg_side_preference, w_avg_first_checks, ...
         e, '124 HR Trial');
+    showTrials(w_avg_pref_error, w_avg_side_preference, w_avg_first_checks, ...
+        e, '4 HR Trial');
     
     multi_groups{e} = value_groups;
 end
@@ -200,20 +202,27 @@ avg_side_preference = temp;
 error = e;
 
 figure;
-%barwitherr(error, avg_side_preference);
-for cond = 1:3
-    k = cond*2;
-    barwitherr(error(cond,1), k-1, avg_side_preference(cond,1),'b');
-    hold on
-    barwitherr(error(cond,2), k, avg_side_preference(cond,2),'r');
-    hold on
-end
-set(gca,'XTick', [1.5 3.5 5.5], 'XTickLabel',{'Degrade','Replenish','Pilfer'});
+barwitherr(error, avg_side_preference);
+set(gca,'XTickLabel',{'Degrade','Replenish','Pilfer'});
 legend('peanut','worm');
 ylabel('Avg Number of Checks');
-drawnow;
 title_message = horzcat(type, ' Side Preference');
 title(title_message);
+
+%barwitherr(error, avg_side_preference);
+% for cond = 1:3
+%     k = cond*2;
+%     barwitherr(error(cond,1), k-1, avg_side_preference(cond,1),'b');
+%     hold on
+%     barwitherr(error(cond,2), k, avg_side_preference(cond,2),'r');
+%     hold on
+% end
+% set(gca,'XTick', [1.5 3.5 5.5], 'XTickLabel',{'Degrade','Replenish','Pilfer'});
+% legend(['peanut','worm']);
+% ylabel('Avg Number of Checks');
+% drawnow;
+% title_message = horzcat(type, ' Side Preference');
+% title(title_message);
 saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(epp), type), 'fig');
 
 end

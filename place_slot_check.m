@@ -33,7 +33,7 @@ global PLACE_SLOTS;
         %model
     end
 
-%     disp(ranked_slots);
+    disp(ranked_slots);
     checked_places = ranked_slots;
     side_pref = side_pref_calc(ranked_slots);
     avg_checks = ranked_slots';
