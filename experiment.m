@@ -228,8 +228,8 @@ function [worm_trial pean_trial] = ...
     global HVAL;
 
     if VALUE == 1
-        value = PILF;
-        disp('PILFER TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
+        value = DEGR;
+        disp('DEGRADE TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
     elseif VALUE == 2
         value = REPL;
