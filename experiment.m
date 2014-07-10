@@ -377,10 +377,6 @@ function [worm_trial pean_trial] = ...
                 is_replenish = current_time == 4;
             end
             
-            if value == PILF
-                is_replenish = 0;
-            end
-
             if is_replenish
                 val = REPL;
             else
@@ -531,12 +527,18 @@ function [worm_trial pean_trial] = ...
 
 	if ~is_testing
         rein_dur = 2;
-        value
-        if value(1) == DEGR(1) && value(2) == DEGR(2)
+        
+%         if value(1) == DEGR(1) && value(2) == DEGR(2)
+%             short_values = [REPL; REPL];
+%         elseif value(1) == PILF(1) && value(2) == PILF(2)
+%            short_values = [REPL; REPL];
+%         elseif value(1) == REPL(1) && value(2) == REPL(2)
+%             short_values = [value; value];
+%         end
+
+        if value == DEGR
             short_values = [REPL; REPL];
-        elseif value(1) == PILF(1) && value(2) == PILF(2)
-           short_values = [REPL; REPL];
-        elseif value(1) == REPL(1) && value(2) == REPL(2)
+        else
             short_values = [value; value];
         end
         
