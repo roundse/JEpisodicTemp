@@ -4,6 +4,9 @@
 % - also I changed line 405 in experiment to check for worm instead of time
 %   during testing, because testing is set up differently, so it was wrong
 
+
+%Adding comment for commit: This version seems to do best on pilfer.
+
 function jay_episodic()
 clear;
 close all;
