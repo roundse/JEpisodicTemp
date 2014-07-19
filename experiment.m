@@ -227,11 +227,11 @@ function [worm_trial pean_trial] = ...
     global PVAL;
     global HVAL;
 
-    if VALUE == 1
+    if VALUE == 2
         value = DEGR;
         disp('DEGRADE TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-    elseif VALUE == 2
+    elseif VALUE == 3
         value = REPL;
         disp('REPLENISH TRIAL~~~~~~~~~~~~~~~~~~~~~~~~');
 
@@ -424,8 +424,8 @@ function [worm_trial pean_trial] = ...
             
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
-            disp('Current value is:');
-            disp(val);
+            %disp('Current value is:');
+            %disp(val);
             
             m1 = mean(hpc_cumul_activity) / (current_time*14);
             activity1 = mean(m1);
