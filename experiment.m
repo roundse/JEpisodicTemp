@@ -424,8 +424,8 @@ function [worm_trial pean_trial] = ...
             
             show_weights([prot_type, ' ', num2str(current_time)], is_disp_weights);
 
-            disp('Current value is:');
-            disp(val);
+            %disp('Current value is:');
+            %disp(val);
             
             m1 = mean(hpc_cumul_activity) / (current_time*14);
             activity1 = mean(m1);
