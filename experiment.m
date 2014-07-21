@@ -253,6 +253,13 @@ function [worm_trial pean_trial] = ...
 %         %disp('PILFER TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 %     end
 
+
+    global is_place_stim;
+    global is_food_stim;
+
+    is_place_stim = 0;
+    is_food_stim = 0;
+
     global place;
     global hpc_cumul_activity;
     global pfc_cumul_activity;
@@ -349,7 +356,7 @@ function [worm_trial pean_trial] = ...
             end
            
             val = 1;
-
+            is_place_stim = 1;
             for i = spots
                 while place(i,:) == 0
                     place(i,:) = current_type;
@@ -357,7 +364,7 @@ function [worm_trial pean_trial] = ...
 
                 cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, val);
             end
-            
+            is_place_stim = 0;
             % consolidate
 %             spots = spot_shuffler(14);
 
@@ -388,6 +395,7 @@ function [worm_trial pean_trial] = ...
 
             hpc_cumul_activity = 0;
             pfc_cumul_activity = 0;
+            is_place_stim = 1;
             
             for q = 1:current_time
                 hpc_learning = 1;
@@ -418,7 +426,7 @@ function [worm_trial pean_trial] = ...
                         
                     cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
                 end
-
+                is_place_stim = 1;
             end
             hpc_learning = 0;
             
@@ -498,8 +506,10 @@ function [worm_trial pean_trial] = ...
         else
             val = value;
         end
-
-        for q = 1:3
+        is_place_stim = 1;
+        is_food_stim = 1;
+        
+        for q = 1:8
 %           hpc_learning = 1;
             if ~is_testing
                 pfc_learning = 1;
@@ -522,7 +532,9 @@ function [worm_trial pean_trial] = ...
 
             pfc_learning = 0;
             hpc_learning = 0;
-        end       
+        end
+        is_place_stim = 0;
+        is_food_stim = 0;
     end
 
 	if ~is_testing
@@ -536,7 +548,7 @@ function [worm_trial pean_trial] = ...
 %             short_values = [value; value];
 %         end
 
-        if value == DEGR
+        if value == DEGR | value == PILF
             short_values = [REPL; REPL];
         else
             short_values = [value; value];
