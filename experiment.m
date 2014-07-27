@@ -231,7 +231,7 @@ function [worm_trial pean_trial] = ...
         value = DEGR;
         disp('DEGRADE TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
-    elseif VALUE == 2
+    elseif VALUE == 3
         value = REPL;
         disp('REPLENISH TRIAL~~~~~~~~~~~~~~~~~~~~~~~~');
 
@@ -357,6 +357,7 @@ function [worm_trial pean_trial] = ...
            
             val = 1;
             is_place_stim = 1;
+            is_food_stim = 1;
             for i = spots
                 while place(i,:) == 0
                     place(i,:) = current_type;
@@ -365,6 +366,7 @@ function [worm_trial pean_trial] = ...
                 cycle_net(PLACE_SLOTS(i,:), place(i,:), cycles, val);
             end
             is_place_stim = 0;
+            is_food_stim = 0;
             % consolidate
 %             spots = spot_shuffler(14);
 
@@ -413,6 +415,10 @@ function [worm_trial pean_trial] = ...
                 else
                     spots = spot_shuffler(1,14);
                 end
+                
+                if q == 1
+                    val = [1 1];
+                end
       
                 for i = spots
                     if i < 8
@@ -426,7 +432,7 @@ function [worm_trial pean_trial] = ...
                         
                     cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
                 end
-                is_place_stim = 1;
+                is_place_stim = 0;
             end
             hpc_learning = 0;
             
@@ -509,7 +515,7 @@ function [worm_trial pean_trial] = ...
         is_place_stim = 1;
         is_food_stim = 1;
         
-        for q = 1:8
+        for q = 1:4
 %           hpc_learning = 1;
             if ~is_testing
                 pfc_learning = 1;
@@ -538,7 +544,7 @@ function [worm_trial pean_trial] = ...
     end
 
 	if ~is_testing
-        rein_dur = 2;
+        rein_dur = 8;
         
 %         if value(1) == DEGR(1) && value(2) == DEGR(2)
 %             short_values = [REPL; REPL];
@@ -567,8 +573,8 @@ function [worm_trial pean_trial] = ...
                 spots = spot_shuffler(14);
 
                 for i = spots
-                    HVAL = 0;
-                    PVAL = 0;
+                    HVAL = 1;
+                    PVAL = 1;
 
                     cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
                 end

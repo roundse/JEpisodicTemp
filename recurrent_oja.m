@@ -22,12 +22,13 @@ max = max_max_weight;
 
 if is_pfc
     eta = pfc_learning_rate;
-    decay = .000000001;
+    decay = 0;
     max = pfc_max;
+    value = 0;
 else
     eta = learning_rate;
     %hpc_cur_decay = hpc_cur_decay + 0.00002;
-    hpc_decay = .35;
+    hpc_decay = .01;
     if hpc_cur_decay > 1
        disp('HPC DECAY TOO LARGE!!!!!!!!!!!!!!!!!!'); 
     end

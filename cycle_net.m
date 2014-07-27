@@ -37,16 +37,16 @@ for j = 2:cycles
     food_out = food(j-1, :);
     pfc_out = pfc(j-1,:);
 
-    if is_place_stim
+%     if is_place_stim
         cycle_place(place_out, eye(PLACE_CELLS), place_stim);
-    end
+%     end
     
     cycle_place(place_out, w_hpc_to_place, hpc_out);
     cycle_place(place_out, w_pfc_to_place, pfc_out);
 
-    if is_food_stim
+%     if is_food_stim
         cycle_food(food_out, eye(FOOD_CELLS), food_stim);
-    end
+%     end
     
     cycle_food(food_out, w_hpc_to_food, hpc_out);
     cycle_food(food_out, w_pfc_to_food, pfc_out);
@@ -54,15 +54,15 @@ for j = 2:cycles
     cycle_hpc(hpc_out, w_place_to_hpc, place_out, value);
     cycle_hpc(hpc_out, w_food_to_hpc, food_out, value);
     
-    if is_place_stim
-        cycle_hpc(hpc_out, w_food_to_hpc,  food_stim, value);
+    if is_food_stim
+%         cycle_hpc(hpc_out, w_food_to_hpc,  food_stim, value);
     end
     
     cycle_pfc(pfc_out, w_place_to_pfc, place_out, value);
     cycle_pfc(pfc_out, w_food_to_pfc, food_out, value);
     
-    if is_place_stim
-        cycle_pfc(pfc_out, w_food_to_pfc, food_stim, value);
+    if is_place_stim && 0
+%         cycle_pfc(pfc_out, w_food_to_pfc, food_stim, value);
     end
   
     pfc(j,:) = cycle_pfc(pfc_out, is_learning);         
