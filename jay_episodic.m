@@ -32,7 +32,7 @@ gain_step = .04;
 gain_max = 0.7;
 
 
-runs = 30;
+runs = 5;
 cycles = 9;
 
 global REPL;
@@ -45,7 +45,7 @@ PILF = [ 0.0   1.0];
 DEGR = [-4.0   1.0];
 
 gain_oja = 0.7;
-pfc_learning_rate = 0.15;
+pfc_learning_rate = 0.11;
 learning_rate = 0.20;
 %0.4 made pilfer ~> 1.5 | 0.26 -> 2.6 | 2.0 ~~> 3.2 | 1.5 ~> unstable
 % at 2.0 reinforce pfc_learn at 0.1, hpc decay at 0.38
