@@ -31,26 +31,28 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
-runs = 10;
+
+runs = 30;
 cycles = 9;
-% cycles = 8;
 
 global REPL;
 global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 6.0   2.0];
-PILF = [ 0.0   2.0];
-DEGR = [-4.0   2.0]; % O X
-
-%hpc: peanut crazy if training ends on degrade, perfect if it ends on worm.
-%pfc: prefers flip of what was last presented...
+REPL = [ 8.0   1.0];
+PILF = [ 0.0   1.0];
+DEGR = [-4.0   1.0];
 
 gain_oja = 0.7;
-learning_rate = 0.5;
-pfc_learning_rate = 0.25;
-
+pfc_learning_rate = 0.15;
+learning_rate = 0.20;
+%0.4 made pilfer ~> 1.5 | 0.26 -> 2.6 | 2.0 ~~> 3.2 | 1.5 ~> unstable
+% at 2.0 reinforce pfc_learn at 0.1, hpc decay at 0.38
+%        P-W   W-P       P-W   W-P
+% 0.3  | 2.2 , 4.6 |DEG| 1.8,  4.4 (5)
+% 0.25 | 2.3 , 5.1 |DEG| 4.7,  1.9 (10, 60 min per side) 
+% 0.20 | --- , --- |DEG| ---,  --- (40, 480 min per side?) 
 
 global pos
 global DIR;
