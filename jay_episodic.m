@@ -32,7 +32,7 @@ gain_step = .04;
 gain_max = 0.7;
 
 
-runs = 40;
+runs = 30;
 cycles = 9;
 
 global REPL;

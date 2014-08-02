@@ -4,7 +4,7 @@ function [wy wx] = recurrent_oja(output, old_output, input, ...
 global is_pfc;
                              
 if nargin < 6
-    value = 1;
+    value = 0;
 end
 
 global learning_rate;
