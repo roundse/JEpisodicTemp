@@ -13,8 +13,8 @@ close all;
 clc;
 
 global learning_rate;
-global gain_oja;
 global INP_STR;
+global gain_oja;
 global cycles;
 
 global pfc_learning_rate;
@@ -32,7 +32,7 @@ gain_step = .04;
 gain_max = 0.7;
 
 
-runs = 40;
+runs = 20;
 cycles = 9;
 
 global REPL;
@@ -40,13 +40,13 @@ global PILF;
 global DEGR;
 
 %      Worm   Peanut
-REPL = [ 8.0   1.0];
+REPL = [ 6.0   1.0];
 PILF = [ 0.0   1.0];
-DEGR = [-4.0   1.0];
+DEGR = [-6.0   1.0];
 
 gain_oja = 0.7;
-pfc_learning_rate = 0.125;
-learning_rate = 0.25;
+pfc_learning_rate = 0.208;
+learning_rate = 0.416;
 %0.4 made pilfer ~> 1.5 | 0.26 -> 2.6 | 2.0 ~~> 3.2 | 1.5 ~> unstable
 % at 2.0 reinforce pfc_learn at 0.1, hpc decay at 0.38
 %        P-W   W-P       P-W   W-P
@@ -94,7 +94,8 @@ for e=1:1
             
             [worm_trial pean_trial] = ...
                 experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
-            
+%             profile viewer
+%             profile off
             worm_trials{i} = worm_trial;
             pean_trials{i} = pean_trial;
             
@@ -108,7 +109,6 @@ for e=1:1
             p_first_checkeds(i) = pean_trial.('first_check');
             p_pref_error(i) = pean_trial.('error_pref');
             
-            is_disp_weights = false;
             message = horzcat('trial ', num2str(i), ' complete');
             disp(message);
             
@@ -150,7 +150,7 @@ for e=1:1
         
         v = v+1;
     end
-    
+    is_disp_weights = false;
     
     %     figure;
     %     bar(w_avg_pref_error);
