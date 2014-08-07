@@ -92,9 +92,9 @@ pfc_eye = eye(PFC_SIZE);
 w_pfc_to_pfc = zeros(PFC_SIZE);
 
 % 8.1 WAS 0.2 0.2
-w_food_to_pfc = 0.1 .* (rand(FOOD_CELLS, PFC_SIZE) < EXT_CONNECT);
+w_food_to_pfc = 0.07 .* (rand(FOOD_CELLS, PFC_SIZE) < EXT_CONNECT);
 w_pfc_to_food = w_food_to_pfc';
-w_place_to_pfc = 0.1 .* (rand(PLACE_CELLS, PFC_SIZE) < EXT_CONNECT);
+w_place_to_pfc = 0.07 .* (rand(PLACE_CELLS, PFC_SIZE) < EXT_CONNECT);
 w_pfc_to_place = w_place_to_pfc';
 
 global w_pfc_to_place_init;
@@ -125,9 +125,9 @@ food_weight_queue = {};
 w_food_in = eye(FOOD_CELLS);
 w_food_to_food = zeros(FOOD_CELLS);
 
-w_food_to_hpc = 0.7 .* (rand(FOOD_CELLS, HPC_SIZE) < EXT_CONNECT);
+w_food_to_hpc = 0.5 .* (rand(FOOD_CELLS, HPC_SIZE) < EXT_CONNECT);
 w_hpc_to_food = - w_food_to_hpc';
-w_place_to_hpc = 0.7 .* (rand(PLACE_CELLS, HPC_SIZE) < EXT_CONNECT);
+w_place_to_hpc = 0.5 .* (rand(PLACE_CELLS, HPC_SIZE) < EXT_CONNECT);
 w_hpc_to_place =  - w_place_to_hpc';
 
 
@@ -231,7 +231,7 @@ function [worm_trial pean_trial] = ...
     global PVAL;
     global HVAL;
 
-    if VALUE == 1
+    if VALUE == 2
         value = DEGR;
         disp('DEGRADE TRIAL~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
@@ -481,29 +481,29 @@ function [worm_trial pean_trial] = ...
         end
     end
 
-	if ~is_testing
-        rein_dur = 2;
-
-        for t  = 1:rein_dur
-            for q = 1:2
-                pfc_learning = 1;
-                hpc_learning = 1;
-
-                spots = spot_shuffler(14);
-
-                for i = spots
-                    HVAL = 0;
-                    PVAL = 0;
-
-                    cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
-                end
-            end
-        
-        end
-        
-        pfc_learning = 0;
-        hpc_learning = 0;    
-    end
+% 	if ~is_testing
+%         rein_dur = 2;
+% 
+%         for t  = 1:rein_dur
+%             for q = 1:2
+%                 pfc_learning = 1;
+%                 hpc_learning = 1;
+% 
+%                 spots = spot_shuffler(14);
+% 
+%                 for i = spots
+%                     HVAL = 0;
+%                     PVAL = 0;
+% 
+%                     cycle_net( PLACE_SLOTS(i,:), place(i,:), cycles, v);
+%                 end
+%             end
+%         
+%         end
+%         
+%         pfc_learning = 0;
+%         hpc_learning = 0;    
+%     end
 end
 
 function reward_stim(value, cycles, is_replenish)

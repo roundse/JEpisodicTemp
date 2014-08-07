@@ -34,7 +34,7 @@ gain_max = 0.7;
 
 %started at 7:31!
 
-runs = 40;
+runs = 30;
 cycles = 9;
 
 global REPL;
@@ -47,8 +47,8 @@ PILF = [ 0.0   1.0];
 DEGR = [-6.0   1.0];
 
 gain_oja = 0.7;
-pfc_learning_rate = 0.108;
-learning_rate = 0.216;
+pfc_learning_rate = 0.25;
+learning_rate = 0.5;
 
 global pos
 global DIR;
