@@ -5,6 +5,7 @@
 %   during testing, because testing is set up differently, so it was wrong
 
 
+
 %Adding comment for commit: This version seems to do best on pilfer.
 
 function jay_episodic()
@@ -31,8 +32,9 @@ INP_STR = 5;
 gain_step = .04;
 gain_max = 0.7;
 
+%started at 7:31!
 
-runs = 20;
+runs = 40;
 cycles = 9;
 
 global REPL;
@@ -45,14 +47,8 @@ PILF = [ 0.0   1.0];
 DEGR = [-6.0   1.0];
 
 gain_oja = 0.7;
-pfc_learning_rate = 0.208;
-learning_rate = 0.416;
-%0.4 made pilfer ~> 1.5 | 0.26 -> 2.6 | 2.0 ~~> 3.2 | 1.5 ~> unstable
-% at 2.0 reinforce pfc_learn at 0.1, hpc decay at 0.38
-%        P-W   W-P       P-W   W-P
-% 0.3  | 2.2 , 4.6 |DEG| 1.8,  4.4 (5)
-% 0.25 | 2.3 , 5.1 |DEG| 4.7,  1.9 (10, 60 min per side) 
-% 0.20 | --- , --- |DEG| ---,  --- (40, 480 min per side?) 
+pfc_learning_rate = 0.108;
+learning_rate = 0.216;
 
 global pos
 global DIR;
@@ -77,7 +73,6 @@ value_groups = {};
 multi_groups = {};
 
 is_disp_weights = 0;
-% profile on
 for e=1:1
     v = 1;
     while v  <= 3
@@ -88,14 +83,10 @@ for e=1:1
                 num2str(VALUE), ';', num2str(i), '\');
             mkdir(TRIAL_DIR);
             init_val = VALUE;
-            
-            %             [place_responses(i,:) side_pref checked_place first_checked] = ...
-            %             experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
-            
-            [worm_trial pean_trial] = ...
+                       
+            [worm_trial, pean_trial] = ...
                 experiment(cycles, learning_rate, gain_oja, is_disp_weights, VALUE);
-%             profile viewer
-%             profile off
+
             worm_trials{i} = worm_trial;
             pean_trials{i} = pean_trial;
             
@@ -141,29 +132,11 @@ for e=1:1
         w_avg_pref_error(v) = std(w_place_stats)/ sqrt(length(w_place_stats));
         
         value_groups{v} = [VALUE worm_trials pean_trials];
-        %         avg_first_checks(v) = sum(first_checkeds) / runs;
-        %         avg_side_preference(v) = mean(place_stats(:,1));
-        %
-        %         expirments{v} = {INP_STR, VALUE, mean(place_stats(:,2)), avg_side_preference, ...
-        %             place_responses, place_stats, checked_places, ...
-        %             avg_first_checks, avg_side_preference};
-        
+
         v = v+1;
     end
     is_disp_weights = false;
-    
-    %     figure;
-    %     bar(w_avg_pref_error);
-    %     drawnow;
-    %     title('Worm error margin');
-    %
-    %
-    %     figure;
-    %     bar(p_avg_pref_error);
-    %     drawnow;
-    %     title('Peanut error margin');
-    
-    % Some how reordering trials changed the order...
+
     showTrials(p_avg_pref_error, p_avg_side_preference, p_avg_first_checks, ...
         e, '124 HR Trial');
     showTrials(w_avg_pref_error, w_avg_side_preference, w_avg_first_checks, ...
@@ -173,8 +146,6 @@ for e=1:1
 end
 
 save(filename, 'multi_groups');
-% profile viewer
-% profile off
 end
 
 function showTrials(error, avg_side_preference, avg_first_checks, epp, type)
@@ -188,16 +159,12 @@ bar(avg_first_checks);
 drawnow;
 title_message = horzcat(type, ' First Check %');
 title(title_message);
-% strrep(ffc, '%d', num2str(e))
 
 saveas(gcf, horzcat(DIR, '\', ffc, '_', num2str(epp), type), 'fig');
 
 temp = zeros(2,2);
 
 for cond=1:3
-    %l = 2*k;
-    %     temp(l-1) = avg_side_preference(k);
-    %     e(l-1) = error(k);
     temp(cond, 1) = 7 - avg_side_preference(cond);
     temp(cond, 2) = avg_side_preference(cond);
     e(cond, 1) = error(cond);
@@ -215,20 +182,6 @@ ylabel('Avg Number of Checks');
 title_message = horzcat(type, ' Side Preference');
 title(title_message);
 
-%barwitherr(error, avg_side_preference);
-% for cond = 1:3
-%     k = cond*2;
-%     barwitherr(error(cond,1), k-1, avg_side_preference(cond,1),'b');
-%     hold on
-%     barwitherr(error(cond,2), k, avg_side_preference(cond,2),'r');
-%     hold on
-% end
-% set(gca,'XTick', [1.5 3.5 5.5], 'XTickLabel',{'Degrade','Replenish','Pilfer'});
-% legend(['peanut','worm']);
-% ylabel('Avg Number of Checks');
-% drawnow;
-% title_message = horzcat(type, ' Side Preference');
-% title(title_message);
 saveas(gcf, horzcat(DIR, '\', fsp, '_', num2str(epp), type), 'fig');
 
 end
