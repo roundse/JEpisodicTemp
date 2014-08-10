@@ -34,7 +34,7 @@ gain_max = 0.7;
 
 %started at 7:31!
 
-runs = 50;
+runs = 100;
 cycles = 9;
 
 global REPL;
