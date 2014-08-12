@@ -344,7 +344,7 @@ function [worm_trial pean_trial] = ...
                 end   
             end
            
-            val = 1;
+            val = 0;
             is_place_stim = 1;
             for i = spots
                 while place(i,:) == 0
