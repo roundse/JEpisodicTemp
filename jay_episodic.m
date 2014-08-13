@@ -13,6 +13,12 @@ clear;
 close all;
 clc;
 
+global lesion_pfc;
+global lesion_hpc;
+
+lesion_pfc = 0;
+lesion_hpc = 1;
+
 global learning_rate;
 global INP_STR;
 global gain_oja;
@@ -34,7 +40,7 @@ gain_max = 0.7;
 
 %started at 7:31!
 
-runs = 100;
+runs = 5;
 cycles = 9;
 
 global REPL;
