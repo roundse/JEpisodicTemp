@@ -262,6 +262,9 @@ function [worm_trial pean_trial] = ...
     global hpc_cur_decay;
     hpc_cur_decay = 0;
 
+    global lesion_pfc;
+    global lesion_hpc;
+    
     hpc_learning = 0;
     pfc_learning = 0;
 
@@ -270,17 +273,22 @@ function [worm_trial pean_trial] = ...
     food_types = [peanut worm];
     rev_food = [worm peanut];
     time_lengths = [120, 4];
-    %time_lengths = [1, 1];
+%     time_lengths = [1, 1];
     
     type_order = randperm(2);
     time_order = randperm(2);
     
+    global is_testing;    
     is_testing = strcmp(prot_type, 'testing');
 
     global is_learning;
         
     if is_testing
         duration = 2;
+        
+        if lesion_hpc || lesion_pfc
+           disp('~~LESION TRIAL!~~');
+        end
     else
         duration = 4;
     end
@@ -344,7 +352,7 @@ function [worm_trial pean_trial] = ...
                 end   
             end
            
-            val = 1;
+            val = 0;
             is_place_stim = 1;
             for i = spots
                 while place(i,:) == 0
