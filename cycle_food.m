@@ -20,6 +20,9 @@ function returnable = cycle_food(food_in, input_weights, input)
     global is_pfc;
     decay = .004;
     
+    global run_hpc;
+    global run_pfc;
+    
     food_eye = eye(FOOD_CELLS);
       
     queue_pos = length(food_in_queue)+1;
@@ -40,7 +43,7 @@ function returnable = cycle_food(food_in, input_weights, input)
         
         returnable = food_out;
 
-        if hpc_learning
+        if hpc_learning & run_hpc
 %             temp_w_h_f = w_hpc_to_food;
 %             temp_w_f_h = w_food_to_hpc;
 
@@ -51,7 +54,7 @@ function returnable = cycle_food(food_in, input_weights, input)
 %             w_food_to_hpc = w_food_to_hpc - decay * (temp_w_f_h - w_food_to_hpc);
         end
         
-        if pfc_learning
+        if pfc_learning & run_pfc
             is_pfc = 1;
             [w_pfc_to_food w_food_to_pfc] = recurrent_oja(food_out, ...
                 food_in, pfc_in, w_pfc_to_food, w_food_to_pfc, PVAL);

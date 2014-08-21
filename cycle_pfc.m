@@ -8,9 +8,6 @@ global pfc_weight_queue;
 global HVAL;
 global PFC_SIZE;
 
-pfc_eye = eye(PFC_SIZE);
-w_pfc_to_pfc = zeros(PFC_SIZE);
-
 queue_pos = length(pfc_in_queue)+1;
 
 if nargin < 3
@@ -24,10 +21,6 @@ if nargin < 3
     food_pfc_out = activity(pfc_in, pfc_eye, total_inputs, w_pfc_to_pfc);
     
     returnable = food_pfc_out;
-
-    for l = 1:length(w_pfc_to_pfc)
-        w_pfc_to_pfc(l,l) = 0;
-    end
 
     pfc_weight_queue{queue_pos} = [];
     pfc_in_queue{queue_pos} = [];    

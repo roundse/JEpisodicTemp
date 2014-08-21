@@ -1,4 +1,4 @@
-function final_place_activity = cycle_net( place_stim, food_stim, cycles, value)
+function final_place_activity = cycle_net(place_stim, food_stim, cycles, value)
 
 global pfc;
 global hpc;
@@ -24,12 +24,22 @@ global w_place_to_pfc;
 global hpc_cumul_activity;
 global pfc_cumul_activity;
 
-global is_place_stim;
-global is_food_stim;
+global lesion_pfc;
+global lesion_hpc;
+global is_testing;
+
+global run_hpc;
+global run_pfc;
+
+run_hpc = ~(lesion_pfc & is_testing);
+run_pfc = ~(lesion_hpc & is_testing);
 
 hpc = zeros(cycles, HPC_SIZE);
 food = zeros(cycles, FOOD_CELLS);
 place_region = zeros(cycles, PLACE_CELLS);
+
+p_eye = eye(PLACE_CELLS);
+f_eye = eye(FOOD_CELLS);
 
 for j = 2:cycles
     hpc_out = hpc(j-1,:);
@@ -37,24 +47,33 @@ for j = 2:cycles
     food_out = food(j-1, :);
     pfc_out = pfc(j-1,:);
 
-    cycle_place(place_out, eye(PLACE_CELLS), place_stim);
+    cycle_place(place_out, p_eye, place_stim);
 
     cycle_place(place_out, w_hpc_to_place, hpc_out);
     cycle_place(place_out, w_pfc_to_place, pfc_out);
 
-    cycle_food(food_out, eye(FOOD_CELLS), food_stim);
+    cycle_food(food_out, f_eye, food_stim);
     
     cycle_food(food_out, w_hpc_to_food, hpc_out);
     cycle_food(food_out, w_pfc_to_food, pfc_out);
 
-    cycle_hpc(hpc_out, w_place_to_hpc, place_out, value);
-    cycle_hpc(hpc_out, w_food_to_hpc, food_out, value);
-    
-    cycle_pfc(pfc_out, w_place_to_pfc, place_out, value);
-    cycle_pfc(pfc_out, w_food_to_pfc, food_out, value);
+    if run_hpc
+        cycle_hpc(hpc_out, w_place_to_hpc, place_out, value);
+        cycle_hpc(hpc_out, w_food_to_hpc, food_out, value);
+        cycle_hpc(hpc_out, w_food_to_hpc, food_stim, value);
+    end
+
+    if run_pfc
+        cycle_pfc(pfc_out, w_place_to_pfc, place_out, value);
+        cycle_pfc(pfc_out, w_food_to_pfc, food_out, value);
+    end
   
-    pfc(j,:) = cycle_pfc(pfc_out, is_learning);         
-    hpc(j,:) = cycle_hpc(hpc_out, is_learning);
+    if run_pfc
+        pfc(j,:) = cycle_pfc(pfc_out, is_learning);
+    end
+    if run_hpc
+        hpc(j,:) = cycle_hpc(hpc_out, is_learning);
+    end
     place_region(j,:) = cycle_place({place_region(j-1,:), hpc(j,:), ...
                         pfc(j,:)}, is_learning);
     food(j,:) = cycle_food({food(j-1,:), hpc(j,:), ...
