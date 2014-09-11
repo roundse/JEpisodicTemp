@@ -148,6 +148,7 @@ place_region = zeros(cycles, PLACE_CELLS);
 hpc_responses_to_place = zeros(PLACE_CELLS, HPC_SIZE);
 
 global PLACE_SLOTS;
+global TRIAL_DIR;
 
 PLACE_SLOTS = zeros(PLACE_CELLS);
 
@@ -169,6 +170,9 @@ end
 
 place = place';
 
+% filename = horzcat(TRIAL_DIR, 'before training', '_variables');
+% save(filename);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PRE: Agent stores both foods. Consolidates 124 hours and is allowed to
 % retrieve the foods. Learns worms decay.
@@ -178,6 +182,9 @@ place = place';
 
 run_protocol('training', cycles, is_disp_weights, VALUE);
 
+% 
+% filename = horzcat(TRIAL_DIR, 'after training', '_variables');
+% save(filename);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TESTING: Agent stores one food, consolidates either 4 or 124 hours, then
@@ -192,10 +199,8 @@ run_protocol('training', cycles, is_disp_weights, VALUE);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SAVING VARIABLES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-global TRIAL_DIR;
 
 filename = horzcat(TRIAL_DIR, 'after final trial', '_variables');
-
 save(filename);
 
 varlist = {'hpc','place_region','food', 'place_in_queue', ...

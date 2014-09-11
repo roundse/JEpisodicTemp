@@ -21,6 +21,9 @@ function returnable = cycle_place(place_in, input_weights, input)
     global is_pfc;
     decay = .004;
 
+    global run_hpc;
+    global run_pfc;
+
     global REPL;
     
     place_eye = eye(PLACE_CELLS);
@@ -43,7 +46,7 @@ function returnable = cycle_place(place_in, input_weights, input)
 
         returnable = place_out;
 
-        if hpc_learning
+        if hpc_learning & run_hpc
 %             temp_w_h_p = w_hpc_to_place;
 %             temp_w_p_h = w_place_to_hpc;
                        
@@ -51,7 +54,7 @@ function returnable = cycle_place(place_in, input_weights, input)
                 hpc_in, w_hpc_to_place, w_place_to_hpc, HVAL);
         end
         
-        if pfc_learning
+        if pfc_learning & run_pfc
             is_pfc = 1;
             [w_pfc_to_place w_place_to_pfc] = recurrent_oja(place_out, place_in, ...
                 pfc_in, w_pfc_to_place, w_place_to_pfc, PVAL);

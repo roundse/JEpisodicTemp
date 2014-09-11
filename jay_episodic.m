@@ -1,12 +1,5 @@
-% IMPORTANTE NOTE ~~~READ!~~
-% - only replenish is being checked now, needs be turned on at line 75 &
-% 129 & 170 & 161
-% - also I changed line 405 in experiment to check for worm instead of time
-%   during testing, because testing is set up differently, so it was wrong
-
-
-
-%Adding comment for commit: This version seems to do best on pilfer.
+% switch where lesioning happens
+% take snap shots
 
 function jay_episodic()
 clear;
@@ -15,9 +8,14 @@ clc;
 
 global lesion_pfc;
 global lesion_hpc;
+global switch_lesion;
 
-lesion_pfc = 0;
-lesion_hpc = 1;
+% false -> lesion happens during during testing
+% true  -> lesion happens during training
+switch_lesion = 1;
+
+lesion_pfc = 1;
+lesion_hpc = 0;
 
 global learning_rate;
 global INP_STR;
@@ -40,7 +38,7 @@ gain_max = 0.7;
 
 %started at 7:31!
 
-runs = 100;
+runs = 20;
 cycles = 9;
 
 global REPL;

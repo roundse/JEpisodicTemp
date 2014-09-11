@@ -25,6 +25,8 @@ function [checked_places side_pref avg_checks first_checked] = place_slot_check(
         injection_current = neutral_input/(15-p) +(rand(1,14) - 0.5 ); % <-- used for the eleminating input model
 
         final_place_activity = cycle_net(injection_current, [0 0], cycles, 0);
+        
+        save_state(p);
 
         avg = final_place_activity;
         [slot_signal ranked_slots(p)] = find_place(avg); % <-- used for the eleminating input model

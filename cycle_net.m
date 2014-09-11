@@ -30,10 +30,20 @@ global is_testing;
 
 global run_hpc;
 global run_pfc;
+global switch_lesion;
 
-run_hpc = ~(lesion_pfc & is_testing);
-run_pfc = ~(lesion_hpc & is_testing);
-
+if lesion_pfc | lesion_hpc
+    if ~switch_lesion
+        run_hpc = ~(lesion_hpc & is_testing);
+        run_pfc = ~(lesion_pfc & is_testing);
+    else
+        run_hpc = ~(lesion_hpc); %& is_testing);
+        run_pfc = ~(lesion_pfc); %& is_testing); 
+    end
+else
+    run_hpc = 1;
+    run_pfc = 1;
+end
 hpc = zeros(cycles, HPC_SIZE);
 food = zeros(cycles, FOOD_CELLS);
 place_region = zeros(cycles, PLACE_CELLS);
@@ -42,10 +52,18 @@ p_eye = eye(PLACE_CELLS);
 f_eye = eye(FOOD_CELLS);
 
 for j = 2:cycles
-    hpc_out = hpc(j-1,:);
-    place_out = place_region(j-1,:);
+    if ~run_hpc
+        hpc = hpc .* 0;
+    end
+    
+    if ~run_pfc
+        pfc = pfc .* 0;
+    end
+
+    hpc_out = hpc(j-1, :);
+    place_out = place_region(j-1, :);
     food_out = food(j-1, :);
-    pfc_out = pfc(j-1,:);
+    pfc_out = pfc(j-1, :);
 
     cycle_place(place_out, p_eye, place_stim);
 
